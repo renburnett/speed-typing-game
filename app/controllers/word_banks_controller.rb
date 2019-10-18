@@ -1,0 +1,2 @@
+class WordBankController < ApplicationController
+end
