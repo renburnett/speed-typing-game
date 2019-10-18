@@ -1,8 +1,9 @@
-## Style Format:
+## Loose Goals:
 - Ren: Leaderboard
 - Justin: Login, Runs
 - Krista: Words from API
 
+## Style Format:
 - Ruby Tabs: 2
 - JavaScript Tabs: 2
 - Linters/Formatters:
