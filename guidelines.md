@@ -1,4 +1,8 @@
-#Style Format:
+# Style Format:
+## Ren: Leader
+## Justin: Login, Runs
+## Krista: Words from API
+
 - Ruby Tabs: 2
 - JavaScript Tabs: 2
 - Linters/Formatters:
