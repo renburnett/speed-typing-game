@@ -1,12 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
-  main();
+  startGame();
+  playerTypesWord();
 })
 
-const THREE_LETTER_WORDS = "https://api.datamuse.com/words/?sp=???&max=1000"
+// const THREE_LETTER_WORDS = "https://api.datamuse.com/words/?sp=???&max=1000"
 
-function main() {
-  loadWordsFromApi()
-  playerTypesWord()
+
+
+function startGame() {
+  const startBtn = document.getElementById('start-button')
+  startBtn.addEventListener('click', () => {
+    startBtn.classList.add('hidden');
+    loadWordsFromApi();
+    loadEntryForm();
+  })
 }
 
 function loadWordsFromApi() {
@@ -17,28 +24,34 @@ function loadWordsFromApi() {
 
 function iterateOverWords(wordList) {
   wordList.forEach (word => {
-    addWordToPage(word)
+    addWordToPage(word);
   })
 }
 
 function addWordToPage(word) {
-  const wordsToTypeUl = document.getElementById('words-to-type')
-  const li = document.createElement('li')
-  li.innerText = word.word
-  li.id = word.word
-  wordsToTypeUl.append(li)
+  const wordsToTypeUl = document.getElementById('words-to-type');
+  const li = document.createElement('li');
+  li.innerText = word.word;
+  li.id = word.word;
+  wordsToTypeUl.append(li);
+}
+
+function loadEntryForm() {
+  const typingFormDiv = document.getElementById('word-submission-div');
+  typingFormDiv.classList.remove('hidden');
 }
 
 function playerTypesWord() {
-  const typingForm = document.getElementById('word-submission-form')
+  const typingForm = document.getElementById('word-submission-form');
   typingForm.addEventListener('submit', (event) => {
-    event.preventDefault
-    const typedSubmission = typingForm['player-input'].value
-    const matchOnPage = document.getElementById(typedSubmission)
+    event.preventDefault();
+    let typedSubmission = typingForm['player-input'].value;
+    const matchOnPage = document.getElementById(typedSubmission);
     if (matchOnPage) {
-      matchOnPage.style.display = 'none'
+      matchOnPage.classList.add('hidden');
     } else {
-      console.log('no match on page')
+      console.log('no match on page');
     }
+    typingForm['word-entered'].value = '';
   })
 }
