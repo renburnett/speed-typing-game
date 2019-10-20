@@ -3,8 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
   playerTypesWord();
 })
 
-const THREE_LETTER_WORDS = "https://api.datamuse.com/words/?sp=???&max=999"
-
 function startGame() {
   const startBtn = document.getElementById('start-button')
   startBtn.addEventListener('click', () => {
@@ -15,18 +13,24 @@ function startGame() {
 }
 
 function loadWordsFromApi() {
-  fetch(THREE_LETTER_WORDS)
+  fetch('http://localhost:3000/word_lists')
   .then(resp => resp.json())
   .then(chooseRandomWords)
 }
 
 function chooseRandomWords(wordList) {
-  const wordsToTypeUl = document.getElementById('words-to-type');
-  let wordsOnPage = wordsToTypeUl.getElementsByClassName('untyped')
+  let wordsOnPage = document.getElementsByClassName('untyped');
   while (wordsOnPage.length < 4 ) {
-    const location = Math.floor(Math.random() * 1000)
-    addWordToPage(wordList[location])
+    const location = Math.floor(Math.random() * wordList.length);
+    if (!wordIsOnPage(wordList[location].word, wordsOnPage)) {
+      addWordToPage(wordList[location]);
+    }
   }
+}
+
+function wordIsOnPage(word, wordsOnPage) {
+  console.log("words on page:", wordsOnPage)
+  // TODO: check if the word is currently on the page
 }
 
 function addWordToPage(word) {
