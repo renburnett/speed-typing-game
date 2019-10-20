@@ -17,13 +17,16 @@ function startGame() {
 function loadWordsFromApi() {
   fetch(THREE_LETTER_WORDS)
   .then(resp => resp.json())
-  .then(iterateOverWords)
+  .then(chooseRandomWords)
 }
 
-function iterateOverWords(wordList) {
-  wordList.forEach (word => {
-    addWordToPage(word);
-  })
+function chooseRandomWords(wordList) {
+  const wordsToTypeUl = document.getElementById('words-to-type');
+  let wordsOnPage = wordsToTypeUl.getElementsByClassName('untyped')
+  while (wordsOnPage.length < 4 ) {
+    const location = Math.floor(Math.random() * 1000)
+    addWordToPage(wordList[location])
+  }
 }
 
 function addWordToPage(word) {
@@ -31,6 +34,7 @@ function addWordToPage(word) {
   const li = document.createElement('li');
   li.innerText = word.word;
   li.id = word.word;
+  li.classList.add('untyped')
   wordsToTypeUl.append(li);
 }
 
@@ -46,6 +50,7 @@ function playerTypesWord() {
     let typedSubmission = typingForm['player-input'].value;
     const matchOnPage = document.getElementById(typedSubmission);
     if (matchOnPage) {
+      matchOnPage.classList.remove('untyped')
       matchOnPage.classList.add('hidden');
     } else {
       console.log('no match on page');
