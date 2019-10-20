@@ -3,9 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   playerTypesWord();
 })
 
-// const THREE_LETTER_WORDS = "https://api.datamuse.com/words/?sp=???&max=1000"
-
-
+const THREE_LETTER_WORDS = "https://api.datamuse.com/words/?sp=???&max=999"
 
 function startGame() {
   const startBtn = document.getElementById('start-button')
@@ -17,9 +15,9 @@ function startGame() {
 }
 
 function loadWordsFromApi() {
-  // fetch(THREE_LETTER_WORDS)
-  // .then(resp => resp.json())
-  // .then(iterateOverWords)
+  fetch(THREE_LETTER_WORDS)
+  .then(resp => resp.json())
+  .then(iterateOverWords)
 }
 
 function iterateOverWords(wordList) {
