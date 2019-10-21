@@ -8,6 +8,7 @@
 
 Account.destroy_all
 Run.destroy_all
+WordBank.destroy_all
 
 account1 = Account.create(username: "Justin", email: "j@j.com")
 account1.runs.create(score: 0, words_typed: "great, job, dad",  words_seen: "one, two, great, job, dad")
@@ -17,3 +18,9 @@ account2.runs.create(score: -1, words_typed: "great, job, dad",  words_seen: "mu
 
 account3 = Account.create(username: "Krista", email: "k@k.com")
 account3.runs.create(score: 3, words_typed: "great, job, dad",  words_seen: "paint, sky, blue, great, job, dad")
+
+words = ["arc", "rig",  "dip", "ray", "tag", "win", "wet", "hot", "mow", "arm", "bio", "low", "dry", "fix", "ask", "pea", "ash", "sun", "pig", "own", "pod", "may", "sit", "old", "fan", "sit", "rue", "fox", "ace", "leg", "ram", "sap", "lee", "woe", "sky"]
+
+words.each do |word|
+  WordBank.create(word: word, length: word.length)
+end
