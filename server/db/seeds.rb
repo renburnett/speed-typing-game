@@ -12,3 +12,8 @@ Run.destroy_all
 account1 = Account.create(username: "Justin", email: "j@j.com")
 account1.runs.create(score: 0, words_typed: "great, job, dad",  words_seen: "one, two, great, job, dad")
 
+account2 = Account.create(username: "Ren", email: "r@r.com")
+account2.runs.create(score: -1, words_typed: "great, job, dad",  words_seen: "mule, duck, great, woah, dad")
+
+account3 = Account.create(username: "Krista", email: "k@k.com")
+account3.runs.create(score: 3, words_typed: "great, job, dad",  words_seen: "paint, sky, blue, great, job, dad")
