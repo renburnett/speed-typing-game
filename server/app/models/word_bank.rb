@@ -1,0 +1,2 @@
+class WordBank < ApplicationRecord
+end
