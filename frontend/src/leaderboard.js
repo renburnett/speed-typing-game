@@ -1,10 +1,8 @@
 const ACCOUNTS_URL = "http://localhost:3000/accounts";
 document.addEventListener('DOMContentLoaded', () => {
-  main();
-});
-function main() {
   fetchUsers();
-}
+});
+
 function fetchUsers() {
   fetch(ACCOUNTS_URL)
   .then(res => res.json())
@@ -12,7 +10,6 @@ function fetchUsers() {
 }
 function createAccounts(accounts) {
   for (const account of accounts) {
-    console.log(account);
     displayAccount(createAccount(account));
   }
 }
@@ -22,10 +19,10 @@ function displayAccount(accountDiv) {
 }
 function createAccount(account) {
   const accountDiv = document.createElement('div');
-  const accountH2 = document.createElement('h3');
+  const accountH3 = document.createElement('h3');
   const accountP = document.createElement('p');
   accountH2.textContent = account.username;
   accountP.textContent = account.email;
-  accountDiv.append(accountH2, accountP);
+  accountDiv.append(accountH3, accountP);
   return accountDiv;
 }
