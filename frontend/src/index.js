@@ -1,34 +1,34 @@
-let loggedInAccount
+let loggedInAccount;
 
-document.getElementById('login-form').addEventListener('submit', (event) => {
-  event.preventDefault()
+document.getElementById('login-form').addEventListener('submit', event => {
+  event.preventDefault();
 
-  const form = document.getElementById('login-form')
-  const username = form.elements.username.value
-  const email = form.elements.email.value
+  const form = document.getElementById('login-form');
+  const username = form.elements.username.value;
+  const email = form.elements.email.value;
 
-  accountLogin(email, username)
+  accountLogin(email, username);
 
-  form.elements.username.value = ''
-  form.elements.email.value = ''
-})
+  form.elements.username.value = '';
+  form.elements.email.value = '';
+});
 
 function accountLogin (email, username) {
   fetch('http://localhost:3000/accounts')
     .then(resp => resp.json())
     .then(accounts => {
-      loggedInAccount = accounts.find(account => account.email === email)
+      loggedInAccount = accounts.find(account => account.email === email);
       if (!loggedInAccount) {
         createAccount(email, username)
           .then(resp => resp.json())
           .then(account => {
-            loggedInAccount = account
-            displayGame()
-          })
+            loggedInAccount = account;
+            displayGame();
+          });
       } else {
-        displayGame()
+        displayGame();
       }
-    })
+    });
 }
 
 function createAccount (email, username) {
@@ -42,10 +42,10 @@ function createAccount (email, username) {
       email: email,
       username: username
     })
-  })
+  });
 }
 
 function displayGame () {
-  document.getElementById('login-form').classList.add('hidden')
-  document.getElementById('game-window').classList.remove('hidden')
+  document.getElementById('login-form').classList.add('hidden');
+  document.getElementById('game-window').classList.remove('hidden');
 }
