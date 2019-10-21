@@ -1,66 +1,66 @@
 document.addEventListener('DOMContentLoaded', () => {
-  startGame()
-  playerTypesWord()
+  startGame();
+  playerTypesWord();
 })
 
-const WORDS_SEEN = []
-const WORDS_TYPED = []
-let ALL_WORDS = []
+const WORDS_SEEN = [];
+const WORDS_TYPED = [];
+let ALL_WORDS = [];
 
 function startGame () {
-  const startBtn = document.getElementById('start-button')
+  const startBtn = document.getElementById('start-button');
   startBtn.addEventListener('click', () => {
-    startBtn.classList.add('hidden')
-    loadEntryForm()
-    loadWordsFromApi()
+    startBtn.classList.add('hidden');
+    loadEntryForm();
+    loadWordsFromApi();
   })
 }
 
 function loadWordsFromApi () {
   fetch('http://localhost:3000/word_banks')
-  .then(resp => resp.json())
-  .then(json => ALL_WORDS = json)
-  .then(chooseRandomWords)
+    .then(resp => resp.json())
+    .then(json => ALL_WORDS = json)
+    .then(chooseRandomWords);
 }
 
 function chooseRandomWords () {  
-  const wordsOnPage = document.getElementsByClassName('untyped')
+  const wordsOnPage = document.getElementsByClassName('untyped');
   while (wordsOnPage.length < 3) {
-    const location = Math.floor(Math.random() * ALL_WORDS.length)
-    const randomWord = ALL_WORDS[location].word
+    const location = Math.floor(Math.random() * ALL_WORDS.length);
+    const randomWord = ALL_WORDS[location].word;
     if (!WORDS_SEEN.includes(randomWord)) {
-      addWordToPage(randomWord)
-      WORDS_SEEN.push(randomWord)
+      addWordToPage(randomWord);
+      WORDS_SEEN.push(randomWord);
     }
   }
 }
 
 function addWordToPage (word) {
-  const wordsToTypeUl = document.getElementById('words-to-type')
-  const li = document.createElement('li')
-  li.innerText = word
-  li.classList.add('untyped')
-  wordsToTypeUl.append(li)
+  const wordsToTypeUl = document.getElementById('words-to-type');
+  const li = document.createElement('li');
+  li.innerText = word;
+  li.classList.add('untyped');
+  wordsToTypeUl.append(li);
 }
 
 function loadEntryForm () {
-  const typingFormDiv = document.getElementById('word-submission-div')
-  typingFormDiv.classList.remove('hidden')
+  const typingFormDiv = document.getElementById('word-submission-div');
+  typingFormDiv.classList.remove('hidden');
 }
 
 function playerTypesWord () {
-  const typingForm = document.getElementById('word-submission-form')
+  const typingForm = document.getElementById('word-submission-form');
   typingForm.addEventListener('submit', (event) => {
-    event.preventDefault()
-    const typedSubmission = typingForm['player-input'].value
-    WORDS_TYPED.push(typedSubmission)
+    event.preventDefault();
+    const typedSubmission = typingForm['player-input'].value;
+    WORDS_TYPED.push(typedSubmission);
     if (WORDS_SEEN.includes(typedSubmission)) {
-      removeWordFromPage(typedSubmission)
+      removeWordFromPage(typedSubmission);
     } else {
-      console.log('no match on page')
+      console.log('no match on page');
     }
-    typingForm['word-entered'].value = ''
-  })
+    typingForm['word-entered'].value = '';
+  });
 }
 
 function removeWordFromPage (submission) {
