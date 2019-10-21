@@ -3,8 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
   playerTypesWord();
 });
 
-const THREE_LETTER_WORDS = 'https://api.datamuse.com/words/?sp=???&max=999';
-let currentRun;
 let ALL_WORDS = [];
 
 function startGame () {
