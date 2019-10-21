@@ -1,42 +1,44 @@
 document.addEventListener('DOMContentLoaded', () => {
   startGame();
   playerTypesWord();
-});
+})
 
-const THREE_LETTER_WORDS = 'https://api.datamuse.com/words/?sp=???&max=999';
+const WORDS_SEEN = [];
+const WORDS_TYPED = [];
+let ALL_WORDS = [];
 
 function startGame () {
   const startBtn = document.getElementById('start-button');
-
   startBtn.addEventListener('click', () => {
     startBtn.classList.add('hidden');
-    loadWordsFromApi();
     loadEntryForm();
-  });
+    loadWordsFromApi();
+  })
 }
 
 function loadWordsFromApi () {
-  fetch(THREE_LETTER_WORDS)
+  fetch('http://localhost:3000/word_banks')
     .then(resp => resp.json())
+    .then(json => ALL_WORDS = json)
     .then(chooseRandomWords);
 }
 
-function chooseRandomWords (wordList) {
-  const wordsToTypeUl = document.getElementById('words-to-type');
-  const wordsOnPage = wordsToTypeUl.getElementsByClassName('untyped');
-
-  while (wordsOnPage.length < 4) {
-    const location = Math.floor(Math.random() * 1000);
-    addWordToPage(wordList[location]);
+function chooseRandomWords () {  
+  const wordsOnPage = document.getElementsByClassName('untyped');
+  while (wordsOnPage.length < 3) {
+    const location = Math.floor(Math.random() * ALL_WORDS.length);
+    const randomWord = ALL_WORDS[location].word;
+    if (!WORDS_SEEN.includes(randomWord)) {
+      addWordToPage(randomWord);
+      WORDS_SEEN.push(randomWord);
+    }
   }
 }
 
 function addWordToPage (word) {
   const wordsToTypeUl = document.getElementById('words-to-type');
   const li = document.createElement('li');
-
-  li.innerText = word.word;
-  li.id = word.word;
+  li.innerText = word;
   li.classList.add('untyped');
   wordsToTypeUl.append(li);
 }
@@ -48,18 +50,24 @@ function loadEntryForm () {
 
 function playerTypesWord () {
   const typingForm = document.getElementById('word-submission-form');
-  typingForm.addEventListener('submit', event => {
+  typingForm.addEventListener('submit', (event) => {
     event.preventDefault();
-
     const typedSubmission = typingForm['player-input'].value;
-    const matchOnPage = document.getElementById(typedSubmission);
-
-    if (matchOnPage) {
-      matchOnPage.classList.remove('untyped');
-      matchOnPage.classList.add('hidden');
+    WORDS_TYPED.push(typedSubmission);
+    if (WORDS_SEEN.includes(typedSubmission)) {
+      removeWordFromPage(typedSubmission);
     } else {
       console.log('no match on page');
     }
     typingForm['word-entered'].value = '';
   });
+}
+
+function removeWordFromPage (submission) {
+  const wordsOnPage = document.getElementsByClassName('untyped')
+  for (const word in wordsOnPage) {
+    if (submission === wordsOnPage[word].textContent) {
+      wordsOnPage[word].remove()
+    }
+  }
 }
