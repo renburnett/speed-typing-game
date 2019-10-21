@@ -3,6 +3,8 @@ capybara-*.html
 .rspec
 /log
 /tmp
+/server/log
+/server/tmp
 /db/*.sqlite3
 /db/*.sqlite3-journal
 /public/system
@@ -47,3 +49,9 @@ bower.json
 # Ignore node_modules
 node_modules/
 
+# Ignore DS_store
+.DS_Store
+
+# Ignore logs
+*.log
+server/log/*.log
