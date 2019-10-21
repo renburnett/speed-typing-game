@@ -20,17 +20,21 @@ function loadWordsFromApi() {
 
 function chooseRandomWords(wordList) {
   let wordsOnPage = document.getElementsByClassName('untyped');
-  while (wordsOnPage.length < 4 ) {
+  while (wordsOnPage.length < 3 ) {
     const location = Math.floor(Math.random() * wordList.length);
-    if (!wordIsOnPage(wordList[location].word, wordsOnPage)) {
+    if (!isWordOnPage(wordList[location].word, wordsOnPage)) {
       addWordToPage(wordList[location]);
     }
   }
 }
 
-function wordIsOnPage(word, wordsOnPage) {
-  console.log("words on page:", wordsOnPage)
-  // TODO: check if the word is currently on the page
+function isWordOnPage(word, wordsOnPage) {
+  for (let i = 0; i < wordsOnPage.length; i++) {
+    if (wordsOnPage[i].id === word) {
+      return true
+    }
+  }
+  return false
 }
 
 function addWordToPage(word) {
