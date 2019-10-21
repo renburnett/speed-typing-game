@@ -50,8 +50,10 @@ function playerTypesWord () {
   const typingForm = document.getElementById('word-submission-form');
   typingForm.addEventListener('submit', event => {
     event.preventDefault();
+
     const typedSubmission = typingForm['player-input'].value;
     const matchOnPage = document.getElementById(typedSubmission);
+
     if (matchOnPage) {
       matchOnPage.classList.remove('untyped');
       matchOnPage.classList.add('hidden');
