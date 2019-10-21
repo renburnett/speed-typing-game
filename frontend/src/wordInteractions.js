@@ -66,7 +66,8 @@ function playerTypesWord() {
 function removeWordFromPage(submission) {
   let wordsOnPage = document.getElementsByClassName('untyped');
   for (const word in wordsOnPage) {
-    if (submission === wordsOnPage[word].textContent)
-    wordsOnPage[word].remove()
+    if (submission === wordsOnPage[word].textContent) {
+      wordsOnPage[word].remove();
+    }
   }
 }
