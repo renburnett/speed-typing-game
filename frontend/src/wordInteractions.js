@@ -1,10 +1,9 @@
+const THREE_LETTER_WORDS = 'https://api.datamuse.com/words/?sp=???&max=999';
+
 document.addEventListener('DOMContentLoaded', () => {
   startGame();
   playerTypesWord();
 });
-
-const THREE_LETTER_WORDS = 'https://api.datamuse.com/words/?sp=???&max=999';
-let currentRun;
 
 function startGame () {
   const startBtn = document.getElementById('start-button');
@@ -13,15 +12,21 @@ function startGame () {
     startBtn.classList.add('hidden');
     document.getElementById('leaderboard-button').classList.add('hidden');
     document.getElementById('leaderboard-window').classList.add('hidden');
+    document.getElementById('game-won-header').classList.add('hidden');
+    document.getElementById('game-lost-header').classList.add('hidden');
 
     createNewRun()
       .then(resp => resp.json())
       .then(run => {
-        currentRun = run;
-      });
+        game.run = run;
+        game.wordsSeen = [];
+        game.wordsTyped = [];
+        game.score = 0;
+        game.typos = 0;
 
-    loadWordsFromApi();
-    loadEntryForm();
+        loadWordsFromApi();
+        loadEntryForm();
+      });
   });
 }
 
@@ -33,7 +38,7 @@ function createNewRun () {
       Accept: 'application/json'
     },
     body: JSON.stringify({
-      account_id: loggedInAccount.id,
+      account_id: game.account.id,
       score: 0,
       words_typed: [],
       words_seen: []
@@ -65,6 +70,8 @@ function addWordToPage (word) {
   li.id = word.word;
   li.classList.add('untyped');
   wordsToTypeUl.append(li);
+
+  game.wordsSeen.push(word.word);
 }
 
 function loadEntryForm () {
@@ -83,9 +90,52 @@ function playerTypesWord () {
     if (matchOnPage) {
       matchOnPage.classList.remove('untyped');
       matchOnPage.classList.add('hidden');
+
+      game.wordsTyped.push(typedSubmission);
     } else {
-      console.log('no match on page');
+      game.typos++;
     }
+    if (game.typos > 2) {
+      gameOver(false);
+    } else if (allWordsTyped()) {
+      gameOver(true);
+    }
+
     typingForm['word-entered'].value = '';
+  });
+}
+
+function allWordsTyped () {
+  return game.wordsTyped.length === game.wordsSeen.length;
+}
+
+function gameOver (win) {
+  updateRun();
+
+  if (win) {
+    document.getElementById('game-won-header').classList.remove('hidden');
+  } else {
+    document.getElementById('game-lost-header').classList.remove('hidden');
+  }
+  document.getElementById('start-button').classList.remove('hidden');
+  document.getElementById('leaderboard-button').classList.remove('hidden');
+
+  document.getElementById('word-submission-div').classList.add('hidden');
+  document.getElementById('words-to-type').innerHTML = '';
+}
+
+function updateRun () {
+  return fetch(`http://localhost:3000/runs/${game.run.id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    },
+    body: JSON.stringify({
+      account_id: game.account.id,
+      score: game.score,
+      words_typed: game.wordsTyped.join(', '),
+      words_seen: game.wordsSeen.join(', ')
+    })
   });
 }

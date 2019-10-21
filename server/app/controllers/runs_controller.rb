@@ -1,6 +1,6 @@
 class RunsController < ApplicationController
-  before_action :set_account, only: %i[create]
-  before_action :set_run, only: %i[show]
+  before_action :set_account, only: %i[create update]
+  before_action :set_run, only: %i[show update]
 
   def index
     render json: Run.all
@@ -15,6 +15,12 @@ class RunsController < ApplicationController
     @run.account = @account
 
     @run.save
+
+    render json: @run
+  end
+
+  def update
+    @run.update(run_params)
 
     render json: @run
   end
