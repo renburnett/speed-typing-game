@@ -1,7 +1,10 @@
 const ACCOUNTS_URL = 'http://localhost:3000/accounts';
 
 document.getElementById('leaderboard-button').addEventListener('click', () => {
-  document.getElementById('leaderboard-window').innerHTML = '';
+  const leaderboard = document.getElementById('leaderboard-window');
+  while (leaderboard.firstChild) {
+    leaderboard.removeChild(leaderboard.firstChild);
+  }
   document.getElementById('leaderboard-window').classList.remove('hidden');
   fetchUsers();
 });

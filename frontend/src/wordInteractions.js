@@ -11,8 +11,7 @@ function startGame () {
     startBtn.classList.add('hidden');
     document.getElementById('leaderboard-button').classList.add('hidden');
     document.getElementById('leaderboard-window').classList.add('hidden');
-    document.getElementById('game-won-header').classList.add('hidden');
-    document.getElementById('game-lost-header').classList.add('hidden');
+    document.getElementById('game-over-header').classList.add('hidden');
 
     createNewRun()
       .then(resp => resp.json())
@@ -82,7 +81,6 @@ function playerTypesWord () {
   typingForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const typedSubmission = typingForm['player-input'].value;
-    const matchOnPage = document.getElementById(typedSubmission);
 
     if (removeWordFromPage(typedSubmission)) {
       game.wordsTyped.push(typedSubmission);
@@ -91,10 +89,7 @@ function playerTypesWord () {
     }
     if (game.typos > 2) {
       gameOver(false);
-    } else if (allWordsTyped()) {
-      gameOver(true);
     }
-
     typingForm['word-entered'].value = '';
   });
 }
@@ -103,14 +98,10 @@ function allWordsTyped () {
   return game.wordsTyped.length === game.wordsSeen.length;
 }
 
-function gameOver (win) {
+function gameOver () {
   updateRun();
 
-  if (win) {
-    document.getElementById('game-won-header').classList.remove('hidden');
-  } else {
-    document.getElementById('game-lost-header').classList.remove('hidden');
-  }
+  document.getElementById('game-over-header').classList.remove('hidden');
   document.getElementById('start-button').classList.remove('hidden');
   document.getElementById('leaderboard-button').classList.remove('hidden');
 
