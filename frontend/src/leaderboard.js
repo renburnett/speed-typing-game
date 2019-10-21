@@ -21,7 +21,7 @@ function createAccount(account) {
   const accountDiv = document.createElement('div');
   const accountH3 = document.createElement('h3');
   const accountP = document.createElement('p');
-  accountH2.textContent = account.username;
+  accountH3.textContent = account.username;
   accountP.textContent = account.email;
   accountDiv.append(accountH3, accountP);
   return accountDiv;
