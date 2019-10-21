@@ -1,19 +1,47 @@
 document.addEventListener('DOMContentLoaded', () => {
   startGame();
   playerTypesWord();
-})
+});
 
-const WORDS_SEEN = [];
-const WORDS_TYPED = [];
 let ALL_WORDS = [];
 
 function startGame () {
   const startBtn = document.getElementById('start-button');
   startBtn.addEventListener('click', () => {
     startBtn.classList.add('hidden');
-    loadEntryForm();
-    loadWordsFromApi();
-  })
+    document.getElementById('leaderboard-button').classList.add('hidden');
+    document.getElementById('leaderboard-window').classList.add('hidden');
+    document.getElementById('game-over-header').classList.add('hidden');
+
+    createNewRun()
+      .then(resp => resp.json())
+      .then(run => {
+        game.run = run;
+        game.wordsSeen = [];
+        game.wordsTyped = [];
+        game.score = 0;
+        game.typos = 0;
+
+        loadWordsFromApi();
+        loadEntryForm();
+      });
+  });
+}
+
+function createNewRun () {
+  return fetch('http://localhost:3000/runs', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    },
+    body: JSON.stringify({
+      account_id: game.account.id,
+      score: 0,
+      words_typed: [],
+      words_seen: []
+    })
+  });
 }
 
 function loadWordsFromApi () {
@@ -23,14 +51,14 @@ function loadWordsFromApi () {
     .then(chooseRandomWords);
 }
 
-function chooseRandomWords () {  
+function chooseRandomWords () {
   const wordsOnPage = document.getElementsByClassName('untyped');
   while (wordsOnPage.length < 3) {
     const location = Math.floor(Math.random() * ALL_WORDS.length);
     const randomWord = ALL_WORDS[location].word;
-    if (!WORDS_SEEN.includes(randomWord)) {
+    if (!game.wordsSeen.includes(randomWord)) {
       addWordToPage(randomWord);
-      WORDS_SEEN.push(randomWord);
+      game.wordsSeen.push(randomWord);
     }
   }
 }
@@ -53,21 +81,56 @@ function playerTypesWord () {
   typingForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const typedSubmission = typingForm['player-input'].value;
-    WORDS_TYPED.push(typedSubmission);
-    if (WORDS_SEEN.includes(typedSubmission)) {
-      removeWordFromPage(typedSubmission);
+
+    if (removeWordFromPage(typedSubmission)) {
+      game.wordsTyped.push(typedSubmission);
     } else {
-      console.log('no match on page');
+      game.typos++;
+    }
+    if (game.typos > 2) {
+      gameOver(false);
     }
     typingForm['word-entered'].value = '';
   });
 }
 
+function allWordsTyped () {
+  return game.wordsTyped.length === game.wordsSeen.length;
+}
+
+function gameOver () {
+  updateRun();
+
+  document.getElementById('game-over-header').classList.remove('hidden');
+  document.getElementById('start-button').classList.remove('hidden');
+  document.getElementById('leaderboard-button').classList.remove('hidden');
+
+  document.getElementById('word-submission-div').classList.add('hidden');
+  document.getElementById('words-to-type').innerHTML = '';
+}
+
+function updateRun () {
+  return fetch(`http://localhost:3000/runs/${game.run.id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    },
+    body: JSON.stringify({
+      account_id: game.account.id,
+      score: game.score,
+      words_typed: game.wordsTyped.join(', '),
+      words_seen: game.wordsSeen.join(', ')
+    })
+  });
+}
 function removeWordFromPage (submission) {
-  const wordsOnPage = document.getElementsByClassName('untyped')
+  const wordsOnPage = document.getElementsByClassName('untyped');
   for (const word in wordsOnPage) {
     if (submission === wordsOnPage[word].textContent) {
-      wordsOnPage[word].remove()
+      wordsOnPage[word].remove();
+      return true;
     }
   }
+  return false;
 }

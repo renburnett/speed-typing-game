@@ -1,4 +1,4 @@
-let loggedInAccount;
+const game = new Game();
 
 document.getElementById('login-form').addEventListener('submit', event => {
   event.preventDefault();
@@ -17,12 +17,12 @@ function accountLogin (email, username) {
   fetch('http://localhost:3000/accounts')
     .then(resp => resp.json())
     .then(accounts => {
-      loggedInAccount = accounts.find(account => account.email === email);
-      if (!loggedInAccount) {
+      game.account = accounts.find(account => account.email === email);
+      if (!game.account) {
         createAccount(email, username)
           .then(resp => resp.json())
           .then(account => {
-            loggedInAccount = account;
+            game.account = account;
             displayGame();
           });
       } else {
