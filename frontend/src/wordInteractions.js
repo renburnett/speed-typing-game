@@ -4,14 +4,41 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const THREE_LETTER_WORDS = 'https://api.datamuse.com/words/?sp=???&max=999';
+let currentRun;
 
 function startGame () {
   const startBtn = document.getElementById('start-button');
 
   startBtn.addEventListener('click', () => {
     startBtn.classList.add('hidden');
+    document.getElementById('leaderboard-button').classList.add('hidden');
+    document.getElementById('leaderboard-window').classList.add('hidden');
+
+    createNewRun()
+      .then(resp => resp.json())
+      .then(run => {
+        currentRun = run;
+        console.log(currentRun);
+      });
+
     loadWordsFromApi();
     loadEntryForm();
+  });
+}
+
+function createNewRun () {
+  return fetch('http://localhost:3000/runs', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    },
+    body: JSON.stringify({
+      account_id: loggedInAccount.id,
+      score: 0,
+      words_typed: [],
+      words_seen: []
+    })
   });
 }
 
