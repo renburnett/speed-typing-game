@@ -76,8 +76,7 @@ class Leaderboard {
     const leaderboardToggle = document.getElementById('leaderboard-toggle');
     leaderboardToggle.addEventListener('click', (event) => {
       this.leaderboardWindow.classList.toggle('hidden');
-      leaderboardToggle.classList.toggle('active');
-      console.log(this);
+      leaderboardToggle.parentElement.classList.toggle('active');
     });
   }
 }
