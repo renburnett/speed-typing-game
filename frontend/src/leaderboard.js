@@ -18,7 +18,7 @@ class Leaderboard {
   fetchUsers() {
     fetch("http://localhost:3000/accounts")
     .then(res => res.json())
-    .then(this.displayAccounts);
+    .then(json => this.displayAccounts(json));
   }
 
   displayAccounts(accounts) {
@@ -62,7 +62,7 @@ class Leaderboard {
     const runWordsSeen = document.createElement('p');
     
     const bestRun = this.getBestRun(account.runs);
-  
+    
     runScoreP.textContent = bestRun.score;
     runWordsTyped.textContent = bestRun.words_typed;
     runWordsSeen.textContent = bestRun.words_seen;
@@ -77,11 +77,15 @@ class Leaderboard {
   }
 }
 
-const leaderboard = new Leaderboard();
-
 document.addEventListener('DOMContentLoaded', () => {
+  const leaderboard = new Leaderboard();
+
   leaderboard.fetchUsers();
   leaderboard.handleLeaderboardToggle();
+  
+  //initial hide
+  leaderboard.leaderboardWindow.classList.toggle('hidden');
+  leaderboard.leaderboardToggleButton.classList.toggle('hidden');
 });
 
 
