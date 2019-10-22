@@ -9,7 +9,6 @@ function startGame () {
   const startBtn = document.getElementById('start-button');
   startBtn.addEventListener('click', () => {
     startBtn.classList.add('hidden');
-    document.getElementById('leaderboard-toggle-button').classList.add('hidden');
     document.getElementById('leaderboard-window').classList.add('hidden');
     document.getElementById('game-over-header').classList.add('hidden');
 
@@ -125,7 +124,6 @@ function gameOver () {
 
   document.getElementById('game-over-header').classList.remove('hidden');
   document.getElementById('start-button').classList.remove('hidden');
-  document.getElementById('leaderboard-toggle-button').classList.remove('hidden');
 
   document.getElementById('word-submission-div').classList.add('hidden');
   document.getElementById('words-to-type').innerHTML = '';
