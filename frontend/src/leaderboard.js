@@ -3,6 +3,7 @@ class Leaderboard {
   constructor() {
     this.leaderboardDiv = document.getElementById('users-container');
     this.leaderboardWindow = document.getElementById('leaderboard-window');
+    this.leaderboardToggleButton = document.getElementById('leaderboard-toggle-button');
 
     this.displayAccount = this.displayAccount.bind(this);
     this.displayAccounts = this.displayAccounts.bind(this);
@@ -11,6 +12,7 @@ class Leaderboard {
     this.getBestRun = this.getBestRun.bind(this);
     this.createBestRunElements = this.createBestRunElements.bind(this);
     this.fetchUsers = this.fetchUsers.bind(this);
+    this.handleLeaderboardToggle = this.handleLeaderboardToggle.bind(this);
   }
 
   fetchUsers() {
@@ -68,13 +70,9 @@ class Leaderboard {
     return [runScoreP, runWordsTyped, runWordsSeen];
   }
 
-  handleLeaderBoardButtonClick() {
-    document.getElementById('leaderboard-button').addEventListener('click', () => {
-      while (leaderboardWindow.firstChild) {
-        leaderboardWindow.removeChild(leaderboardWindow.firstChild);
-      }
-      leaderboardWindow.classList.remove('hidden');
-      this.fetchUsers();
+  handleLeaderboardToggle() {
+    this.leaderboardToggleButton.addEventListener('click', (event) => {
+      this.leaderboardWindow.classList.toggle('hidden');
     });
   }
 }
@@ -83,7 +81,7 @@ const leaderboard = new Leaderboard();
 
 document.addEventListener('DOMContentLoaded', () => {
   leaderboard.fetchUsers();
-  leaderboard.handleLeaderBoardButtonClick();
+  leaderboard.handleLeaderboardToggle();
 });
 
 

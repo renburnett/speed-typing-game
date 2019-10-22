@@ -12,6 +12,10 @@
     <title>Typing Game</title>
 </head>
 <body>
+  <nav>
+      <button id="start-button">Start Game</button>
+      <button id="leaderboard-toggle-button">Toggle Leaderboard</button>
+  </nav>
   <h1>Typing game!</h1>
   <h2 id='game-over-header' class="hidden">Game Over!</h2>
   <form id="login-form" action="" method="POST">
@@ -27,8 +31,7 @@
   </form>
 
   <div id="game-window" class="hidden">
-    <button id="start-button">Start Game</button>
-    <button id="leaderboard-button">Show Leaderboard</button>
+
     <ul id="words-to-type">
     </ul>
     <div id="word-submission-div" class="hidden">
