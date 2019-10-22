@@ -24,6 +24,8 @@ function startGame () {
 
         loadWordsFromApi();
         loadEntryForm();
+        loadTimer();
+        setInterval(runGameTimer, 1000);
       });
   });
 }
@@ -48,19 +50,22 @@ function loadWordsFromApi () {
   fetch('http://localhost:3000/word_banks')
     .then(resp => resp.json())
     .then(json => ALL_WORDS = json)
-    .then(chooseRandomWords);
+    .then(() => {
+      for (let i = 0; i < 3; i++) {
+        chooseRandomWord();
+      }
+    });
 }
 
-function chooseRandomWords () {
-  const wordsOnPage = document.getElementsByClassName('untyped');
-  while (wordsOnPage.length < 3) {
-    const location = Math.floor(Math.random() * ALL_WORDS.length);
-    const randomWord = ALL_WORDS[location].word;
-    if (!game.wordsSeen.includes(randomWord)) {
-      addWordToPage(randomWord);
-      game.wordsSeen.push(randomWord);
-    }
+function chooseRandomWord () {
+  let location = Math.floor(Math.random() * ALL_WORDS.length);
+  let randomWord = ALL_WORDS[location].word;
+  while (game.wordsSeen.includes(randomWord)) {
+    location = Math.floor(Math.random() * ALL_WORDS.length);
+    randomWord = ALL_WORDS[location].word;
   }
+  addWordToPage(randomWord);
+  game.wordsSeen.push(randomWord);
 }
 
 function addWordToPage (word) {
@@ -74,6 +79,27 @@ function addWordToPage (word) {
 function loadEntryForm () {
   const typingFormDiv = document.getElementById('word-submission-div');
   typingFormDiv.classList.remove('hidden');
+}
+
+function loadTimer () {
+  const gameTimerDiv = document.getElementById('game-timer-div');
+  gameTimerDiv.classList.remove('hidden');
+}
+
+function runGameTimer () {
+  incrementTimerOnScreen();
+  chooseRandomWord();
+}
+
+function incrementTimerOnScreen () {
+  const seconds = document.getElementById('seconds');
+  let time = parseInt(seconds.textContent, 10);
+  time += 1;
+  if (time < 10) {
+    seconds.textContent = '0' + time;
+  } else if (time < 60) {
+    seconds.textContent = time;
+  }
 }
 
 function playerTypesWord () {
@@ -92,10 +118,6 @@ function playerTypesWord () {
     }
     typingForm['word-entered'].value = '';
   });
-}
-
-function allWordsTyped () {
-  return game.wordsTyped.length === game.wordsSeen.length;
 }
 
 function gameOver () {
