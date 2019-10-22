@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="stylesheet" href="./styles/index.css">
+    <link rel="stylesheet" href="./styles/leaderboard.css">
     
     <title>Typing Game</title>
 </head>
@@ -38,7 +39,14 @@
     </div>
   </div>
   <div id="leaderboard-window"> 
-    <div id="users-container"></div>
+    <h1>Leaderboard:</h1>
+    <hr>
+    <div id="users-container">
+      <div class="box1 leaderboard-header"> User </div>
+      <div class="box2 leaderboard-header"> Score </div>
+      <div class="box3 leaderboard-header"> Words Typed </div>
+      <div class="box4 leaderboard-header"> Words Seen </div>
+    </div>
   </div>
   <script src="src/leaderboard.js"></script>
   <script src="src/game.js"></script>
