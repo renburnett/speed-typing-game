@@ -1,28 +1,73 @@
-const ACCOUNTS_URL = "http://localhost:3000/accounts";
+
 document.addEventListener('DOMContentLoaded', () => {
-  fetchUsers();
+  leaderboard.fetchUsers();
 });
 
-function fetchUsers() {
-  fetch(ACCOUNTS_URL)
-  .then(res => res.json())
-  .then(createAccounts);
-}
-function createAccounts(accounts) {
-  for (const account of accounts) {
-    displayAccount(createAccount(account));
+class Leaderboard {
+  constructor() {
+    this.leaderboardDiv = document.getElementById('users-container');
+    this.displayAccount = this.displayAccount.bind(this);
+    this.displayAccounts = this.displayAccounts.bind(this);
+    this.displayAccountBestRun = this.displayAccountBestRun.bind(this);
+    this.createAccountDiv = this.createAccountDiv.bind(this);
+    this.getBestRun = this.getBestRun.bind(this);
+    this.createBestRunElements = this.createBestRunElements.bind(this);
+  }
+
+  fetchUsers() {
+    fetch("http://localhost:3000/accounts")
+    .then(res => res.json())
+    .then(this.displayAccounts);
+  }
+
+  displayAccounts(accounts) {
+    for (const account of accounts) {
+      this.displayAccount(this.createAccountDiv(account));
+      this.displayAccountBestRun(this.createBestRunElements(account));
+    }
+  }
+  displayAccount(accountDiv) {
+    this.leaderboardDiv.append(accountDiv);
+  }
+
+  displayAccountBestRun(bestRunElements){
+    for (const ele of bestRunElements) {
+      this.leaderboardDiv.append(ele);
+    }
+  }
+  
+  createAccountDiv(account) {
+    const accountDiv = document.createElement('div');
+    const accountH3 = document.createElement('h3');
+    accountH3.textContent = account.username;
+    accountDiv.append(accountH3);
+  
+    return accountDiv;
+  }
+  
+  getBestRun(runs) {
+    let bestRun = runs[0];
+    for (const run of runs) {
+      if (run.score > bestRun.score) {
+        bestRun = run;
+      }
+    }
+    return bestRun;
+  }
+  
+  createBestRunElements(account) {
+    const runScoreP = document.createElement('p');
+    const runWordsTyped = document.createElement('p');
+    const runWordsSeen = document.createElement('p');
+    
+    const bestRun = this.getBestRun(account.runs);
+  
+    runScoreP.textContent = bestRun.score;
+    runWordsTyped.textContent = bestRun.words_typed;
+    runWordsSeen.textContent = bestRun.words_seen;
+  
+    return [runScoreP, runWordsTyped, runWordsSeen];
   }
 }
-function displayAccount(accountDiv) {
-  const leaderboardDiv = document.getElementById('leaderboard-window');
-  leaderboardDiv.append(accountDiv);
-}
-function createAccount(account) {
-  const accountDiv = document.createElement('div');
-  const accountH3 = document.createElement('h3');
-  const accountP = document.createElement('p');
-  accountH3.textContent = account.username;
-  accountP.textContent = account.email;
-  accountDiv.append(accountH3, accountP);
-  return accountDiv;
-}
+
+const leaderboard = new Leaderboard();

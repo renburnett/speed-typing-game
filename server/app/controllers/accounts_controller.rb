@@ -2,6 +2,6 @@
 
 class AccountsController < ApplicationController
   def index
-    render json: Account.all
+    render json: Account.all, include: [:runs]
   end
 end
