@@ -48,4 +48,5 @@ function createAccount (email, username) {
 function displayGame () {
   document.getElementById('login-form').classList.add('hidden');
   document.getElementById('game-window').classList.remove('hidden');
+  document.getElementById('start-button').classList.remove('hidden');
 }

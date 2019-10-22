@@ -55,3 +55,6 @@ node_modules/
 # Ignore logs
 *.log
 server/log/*.log
+
+# Ignore linter
+.jshintrc

@@ -7,10 +7,15 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="stylesheet" href="./styles/index.css">
+    <link rel="stylesheet" href="./styles/leaderboard.css">
     
     <title>Typing Game</title>
 </head>
 <body>
+  <nav>
+      <button id="start-button" class="hidden">Start Game</button>
+      <button id="leaderboard-toggle-button">Toggle Leaderboard</button>
+  </nav>
   <h1>Typing game!</h1>
   <h2 id='game-over-header' class="hidden">Game Over!</h2>
   <form id="login-form" action="" method="POST">
@@ -26,8 +31,7 @@
   </form>
 
   <div id="game-window" class="hidden">
-    <button id="start-button">Start Game</button>
-    <button id="leaderboard-button">Show Leaderboard</button>
+
     <ul id="words-to-type">
     </ul>
     <div id="word-submission-div" class="hidden">
@@ -38,7 +42,14 @@
     </div>
   </div>
   <div id="leaderboard-window"> 
-    <div id="users-container"></div>
+    <h1>Leaderboard:</h1>
+    <hr>
+    <div id="users-container">
+      <div class="t-title leaderboard-header"> User </div>
+      <div class="t-score leaderboard-header"> Score </div>
+      <div class="t-words-typed leaderboard-header"> Words Typed </div>
+      <div class="t-words-seen leaderboard-header"> Words Seen </div>
+    </div>
   </div>
   <script src="src/leaderboard.js"></script>
   <script src="src/game.js"></script>
