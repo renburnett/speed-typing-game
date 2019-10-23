@@ -22,11 +22,12 @@ function startGame () {
         game.wordsTyped = [];
         game.score = 0;
         game.typos = 0;
+        game.turns = 0;
+        game.difficulty = 14;
 
         loadWordsFromApi();
         loadEntryForm();
         loadTimer();
-        populateWords();
       });
   });
 }
@@ -59,7 +60,8 @@ function loadWordsFromApi () {
       for (let i = 0; i < 3; i++) {
         chooseRandomWord();
       }
-    });
+    })
+    .then(populateWords());
 }
 
 function chooseRandomWord () {
@@ -94,9 +96,9 @@ function incrementTimerOnScreen () {
   const startTime = new Date(game.run.created_at);
   const currentTime = new Date();
 
-  const secs = Math.round((currentTime - startTime) / 1000) % 60;
-  const mins = Math.round((currentTime - startTime) / 60000) % 60;
-  const hrs = Math.round((currentTime - startTime) / 360000) % 24;
+  const secs = Math.floor((currentTime - startTime) / 1000) % 60;
+  const mins = Math.floor((currentTime - startTime) / 60000) % 60;
+  const hrs = Math.floor((currentTime - startTime) / 360000) % 24;
 
   updateTimeOnScreen(secs, document.getElementById('seconds'));
   updateTimeOnScreen(mins, document.getElementById('minutes'));
@@ -108,14 +110,21 @@ function updateTimeOnScreen (time, timeContainer) {
 }
 
 function populateWords () {
-  WORD_POPULATION_ID = setInterval(populateWordsIfActive, 1000);
+  WORD_POPULATION_ID = setInterval(populateWordsIfActive, 100);
 }
 
 function populateWordsIfActive () {
+  game.turns++;
+  console.log(game.turns, game.difficulty);
+  // Every 5 seconds, increase word spawn rate by .1 seconds
+  if (game.turns % 30 === 0 && game.difficulty > 2) {
+    game.difficulty -= 2;
+  }
+  if (game.turns % game.difficulty === 0) {
+    chooseRandomWord();
+  }
   if (Object.keys(ALL_WORDS).length === 0) {
     gameOver();
-  } else {
-    chooseRandomWord();
   }
 }
 
@@ -131,6 +140,7 @@ function playerTypesWord () {
       game.typos++;
     }
     if (game.typos > 2) {
+      console.log('death by typos');
       gameOver();
     }
     typingForm['word-entered'].value = '';
