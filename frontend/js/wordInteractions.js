@@ -110,7 +110,6 @@ function populateWords () {
 
 function populateWordsIfActive () {
   game.turns++;
-  console.log(game.turns, game.difficulty);
   // Every 5 seconds, increase word spawn rate by .1 seconds
   if (game.turns % 30 === 0 && game.difficulty > 2) {
     game.difficulty -= 2;
@@ -131,8 +130,11 @@ function playerTypesWord () {
 
     if (removeWordFromPage(typedSubmission)) {
       game.wordsTyped.push(typedSubmission);
+      game.score += typedSubmission.length;
+      console.log(game.score);
     } else {
       game.typos++;
+      game.score -= typedSubmission.length;
       alertTypo(typedSubmission);
     }
     if (game.typos > 2) {
@@ -193,7 +195,8 @@ function updateRun () {
       words_typed: game.wordsTyped.join(', '),
       words_seen: game.wordsSeen.join(', ')
     })
-  });
+  })
+    .then(leaderboard.fetchUsers);
 }
 
 function resetTyposAlert () {
