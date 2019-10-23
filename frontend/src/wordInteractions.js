@@ -3,8 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   playerTypesWord();
 });
 
-
-let ALL_WORDS = {};
+const ALL_WORDS = {};
 let TIMER_ID;
 let WORD_POPULATION_ID;
 
@@ -112,9 +111,9 @@ function populateWords () {
 }
 
 function populateWordsIfActive () {
-  if (game.wordsSeen.length === ALL_WORDS.length - 1) {
+  if (Object.keys(ALL_WORDS).length === 0) {
     gameOver();
-  } else { 
+  } else {
     chooseRandomWord();
   }
 }
