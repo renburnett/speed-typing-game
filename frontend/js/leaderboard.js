@@ -124,7 +124,7 @@ class Leaderboard {
 
     runContainer.append(userName, runScore, runWordsTyped, runWordsSeen);
 
-    if (game.account !== undefined && Number(game.account.id) === Number(account.id)) {
+    if (game.account && Number(game.account.id) === Number(account.id)) {
       runContainer.append(runDeleteButton);
     }
 
