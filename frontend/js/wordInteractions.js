@@ -91,19 +91,20 @@ function loadTimer () {
 }
 
 function incrementTimerOnScreen () {
-  const seconds = document.getElementById('seconds');
-  const minutes = document.getElementById('minutes');
-  const hours = document.getElementById('hours');
-
   const startTime = new Date(game.run.created_at);
   const currentTime = new Date();
 
   const secs = Math.round((currentTime - startTime) / 1000) % 60;
-  secs < 10 ? seconds.textContent = 0 + secs : seconds.textContent = secs;
   const mins = Math.round((currentTime - startTime) / 60000) % 60;
-  mins < 10 ? minutes.textContent = 0 + mins : minutes.textContent = mins;
   const hrs = Math.round((currentTime - startTime) / 360000) % 24;
-  hrs < 10 ? hours.textContent = 0 + hrs : hours.textContent = hrs;
+
+  updateTimeOnScreen(secs, document.getElementById('seconds'));
+  updateTimeOnScreen(mins, document.getElementById('minutes'));
+  updateTimeOnScreen(hrs, document.getElementById('hours'));
+}
+
+function updateTimeOnScreen (time, timeContainer) {
+  time < 10 ? timeContainer.textContent = '0' + time : timeContainer.textContent = time;
 }
 
 function populateWords () {
