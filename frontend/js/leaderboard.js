@@ -1,75 +1,132 @@
-
 class Leaderboard {
+  
   constructor () {
     this.leaderboardDiv = document.getElementById('users-container');
+    this.leaderboardTableBody = document.getElementById('leaderboard-tbody');
     this.leaderboardWindow = document.getElementById('leaderboard-window');
 
-    this.displayAccount = this.displayAccount.bind(this);
-    this.displayAccounts = this.displayAccounts.bind(this);
+    this.orderUsersBestRuns = this.orderUsersBestRuns.bind(this);
+    this.displayAccountsAndBestRuns = this.displayAccountsAndBestRuns.bind(this);
     this.displayAccountBestRun = this.displayAccountBestRun.bind(this);
-    this.createAccountDiv = this.createAccountDiv.bind(this);
-    this.getBestRun = this.getBestRun.bind(this);
-    this.createBestRunElements = this.createBestRunElements.bind(this);
+    this.getUserBestRun = this.getUserBestRun.bind(this);
+    this.createAccountAndBestRunElements = this.createAccountAndBestRunElements.bind(this);
     this.fetchUsers = this.fetchUsers.bind(this);
+    this.deleteRun = this.deleteRun.bind(this);
     this.handleLeaderboardToggle = this.handleLeaderboardToggle.bind(this);
   }
 
   fetchUsers () {
     fetch('http://localhost:3000/accounts')
       .then(res => res.json())
-      .then(json => this.displayAccounts(json));
+      .then(json => this.displayAccountsAndBestRuns(json));
   }
 
-  displayAccounts (accounts) {
+  deleteRun (runId) {
+    const config = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      }
+    };
+
+    fetch(`http://localhost:3000/runs/${runId}`, config)
+    .then(() => {
+      this.clearUserAccountsFromTable();
+      this.fetchUsers();
+    });
+  }
+
+  clearUserAccountsFromTable () {
+    while (this.leaderboardTableBody.firstChild) {
+      this.leaderboardTableBody.removeChild(this.leaderboardTableBody.firstChild);
+    }
+  }
+
+  displayAccountsAndBestRuns (accounts) {
+    const runElements = [];
+    
     for (const account of accounts) {
-      this.displayAccount(this.createAccountDiv(account));
-      this.displayAccountBestRun(this.createBestRunElements(account));
+      runElements.push(this.createAccountAndBestRunElements(account));
+    }
+    this.orderUsersBestRuns(runElements);
+
+    for (const run of runElements) {
+      this.displayAccountBestRun(run.runElements);
     }
   }
 
-  displayAccount (accountDiv) {
-    this.leaderboardDiv.append(accountDiv);
+  displayAccountBestRun (bestRun) {
+    this.leaderboardTableBody.append(bestRun);
   }
 
-  displayAccountBestRun (bestRunElements) {
-    for (const ele of bestRunElements) {
-      this.leaderboardDiv.append(ele);
-    }
+  orderUsersBestRuns (arr) {
+    arr.sort((a, b) => {
+      if (a.score > b.score) 
+        return -1;
+      else if (a.score < b.score)
+        return 1;
+      else
+        return 0;
+    });
   }
 
-  createAccountDiv (account) {
-    const accountDiv = document.createElement('div');
-    const accountH3 = document.createElement('h3');
-    accountH3.textContent = account.username;
-    accountDiv.append(accountH3);
-
-    return accountDiv;
-  }
-
-  getBestRun (runs) {
+  getUserBestRun (runs) {
     let bestRun = runs[0];
-    for (const run of runs) {
-      if (run.score > bestRun.score) {
-        bestRun = run;
+
+    if (bestRun === undefined) {
+      bestRun = {
+        score: 0,
+        words_typed: [],
+        words_seen: [],
+        id: undefined,
+        account_id: undefined
+      };
+    } else {
+      for (const run of runs) {
+        if (run.score > bestRun.score) {
+          bestRun = run;
+        }
       }
     }
     return bestRun;
   }
 
-  createBestRunElements (account) {
-    const runScoreP = document.createElement('p');
-    const runWordsTyped = document.createElement('p');
-    const runWordsSeen = document.createElement('p');
+  createAccountAndBestRunElements (account) {
+    const runContainer = document.createElement('tr');
+    const userName = document.createElement('td');
+    const runScore = document.createElement('td');
+    const runWordsTyped = document.createElement('td');
+    const runWordsSeen = document.createElement('td');
+    const runDeleteButton = document.createElement('button');
 
-    const bestRun = this.getBestRun(account.runs);
+    const bestRun = this.getUserBestRun(account.runs);
 
-    if (bestRun) {
-      runScoreP.textContent = bestRun.score;
-      runWordsTyped.textContent = bestRun.words_typed;
-      runWordsSeen.textContent = bestRun.words_seen;
-    }
+    runDeleteButton.addEventListener('click', (event) => {
+      if (bestRun.id !== undefined){
+        this.deleteRun(bestRun.id);
+        // .then(console.log(event.target.parentElement));
+      } else {
+        console.log('Cannot delete null run.');
+      }
+      //TODO: target event parent and re-Render
+    });
 
-    return [runScoreP, runWordsTyped, runWordsSeen];
+    userName.textContent = account.username;
+    runScore.textContent = bestRun.score;
+    runWordsTyped.textContent = bestRun.words_typed;
+    runWordsSeen.textContent = bestRun.words_seen;
+    runDeleteButton.textContent = 'Delete';
+    runDeleteButton.classList.add("btn", "btn-link");
+
+    runContainer.append(userName, runScore, runWordsTyped, runWordsSeen, runDeleteButton);
+
+    //TODO: Add figure out global account_id for curent user
+    // if (game.account === account.account_id) {
+    //   runContainer.append(runDeleteButton);
+    // }
+
+    return {runElements: runContainer, accountId: account.id, score: bestRun.score};
   }
 
   handleLeaderboardToggle () {
