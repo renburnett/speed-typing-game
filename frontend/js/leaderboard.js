@@ -1,3 +1,8 @@
+document.addEventListener('DOMContentLoaded', () => {
+  leaderboard.fetchUsers();
+  leaderboard.handleLeaderboardToggle();
+});
+
 class Leaderboard {
   constructor () {
     this.leaderboardTableBody = document.getElementById('leaderboard-tbody');
@@ -43,6 +48,7 @@ class Leaderboard {
 
   displayAccountsAndBestRuns (accounts) {
     const runElements = [];
+    this.clearUserAccountsFromTable();
     
     for (const account of accounts) {
       runElements.push(this.createAccountAndBestRunElements(account));
@@ -116,28 +122,23 @@ class Leaderboard {
     runDeleteButton.textContent = 'Delete';
     runDeleteButton.classList.add("btn", "btn-primary", "link");
 
-    runContainer.append(userName, runScore, runWordsTyped, runWordsSeen, runDeleteButton);
+    runContainer.append(userName, runScore, runWordsTyped, runWordsSeen);
 
-    //BUG: Current user can delete ANY user run 
-    //TODO: Add figure out global account_id for curent user
-    // if (game.account === account.account_id) {
-    //   runContainer.append(runDeleteButton);
-    // }
+    if (game.account !== undefined && Number(game.account.id) === Number(account.id)) {
+      runContainer.append(runDeleteButton);
+    }
 
     return {runElements: runContainer, accountId: account.id, score: bestRun.score};
   }
 
   handleLeaderboardToggle () {
     const leaderboardToggle = document.getElementById('leaderboard-toggle');
-    leaderboardToggle.addEventListener('click', (event) => {
+    leaderboardToggle.addEventListener('click', () => {
       this.leaderboardWindow.classList.toggle('hidden');
       leaderboardToggle.parentElement.classList.toggle('active');
     });
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const leaderboard = new Leaderboard();
-  leaderboard.fetchUsers();
-  leaderboard.handleLeaderboardToggle();
-});
+const leaderboard = new Leaderboard();
+

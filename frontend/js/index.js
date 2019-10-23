@@ -24,9 +24,11 @@ function accountLogin (email, username) {
           .then(account => {
             game.account = account;
             displayGame();
+            leaderboard.fetchUsers();
           });
       } else {
         displayGame();
+        leaderboard.fetchUsers();
       }
     });
 }
