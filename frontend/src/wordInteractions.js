@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 let ALL_WORDS = [];
+let TIMER_ID;
+let WORD_POPULATION_ID;
 
 function startGame () {
   const startBtn = document.getElementById('start-button');
@@ -25,7 +27,7 @@ function startGame () {
         loadWordsFromApi();
         loadEntryForm();
         loadTimer();
-        setInterval(runGameTimer, 1000);
+        populateWords();
       });
   });
 }
@@ -66,6 +68,7 @@ function chooseRandomWord () {
   }
   addWordToPage(randomWord);
   game.wordsSeen.push(randomWord);
+  }
 }
 
 function addWordToPage (word) {
@@ -84,21 +87,25 @@ function loadEntryForm () {
 function loadTimer () {
   const gameTimerDiv = document.getElementById('game-timer-div');
   gameTimerDiv.classList.remove('hidden');
-}
-
-function runGameTimer () {
-  incrementTimerOnScreen();
-  chooseRandomWord();
+  TIMER_ID = setInterval(incrementTimerOnScreen, 1000);
 }
 
 function incrementTimerOnScreen () {
   const seconds = document.getElementById('seconds');
-  let time = parseInt(seconds.textContent, 10);
-  time += 1;
-  if (time < 10) {
-    seconds.textContent = '0' + time;
-  } else if (time < 60) {
-    seconds.textContent = time;
+  const startTime = new Date(game.run.created_at);
+  const currentTime = new Date();
+  seconds.textContent = Math.round((currentTime - startTime) / 1000);
+}
+
+function populateWords () {
+  WORD_POPULATION_ID = setInterval(populateWordsIfActive, 1000);
+}
+
+function populateWordsIfActive () {
+  if (game.wordsSeen.length === ALL_WORDS.length - 1) {
+    gameOver();
+  } else { 
+    chooseRandomWord();
   }
 }
 
@@ -114,7 +121,7 @@ function playerTypesWord () {
       game.typos++;
     }
     if (game.typos > 2) {
-      gameOver(false);
+      gameOver();
     }
     typingForm['word-entered'].value = '';
   });
@@ -129,6 +136,8 @@ function gameOver () {
 
   document.getElementById('word-submission-div').classList.add('hidden');
   document.getElementById('words-to-type').innerHTML = '';
+  resetTimer();
+  clearInterval(WORD_POPULATION_ID);
 }
 
 function updateRun () {
@@ -146,6 +155,13 @@ function updateRun () {
     })
   });
 }
+
+function resetTimer () {
+  document.getElementById('game-timer-div').classList.add('hidden');
+  clearInterval(TIMER_ID);
+  document.getElementById('seconds').textContent = '0';
+}
+
 function removeWordFromPage (submission) {
   const wordsOnPage = document.getElementsByClassName('untyped');
   for (const word in wordsOnPage) {
