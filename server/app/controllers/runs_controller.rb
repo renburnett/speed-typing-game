@@ -1,6 +1,6 @@
 class RunsController < ApplicationController
   before_action :set_account, only: %i[create update]
-  before_action :set_run, only: %i[show update]
+  before_action :set_run, only: %i[show update destroy]
 
   def index
     render json: Run.all
@@ -25,6 +25,10 @@ class RunsController < ApplicationController
     render json: @run
   end
 
+  def destroy
+    @run.destroy
+  end
+
   private
 
   def set_account
@@ -36,6 +40,6 @@ class RunsController < ApplicationController
   end
 
   def run_params
-    params.require(:run).permit(:account_id, :score, :words_seen, :words_typed)
+    params.require(:run).permit(:account_id, :score, :words_seen, :words_typed, :id)
   end
 end

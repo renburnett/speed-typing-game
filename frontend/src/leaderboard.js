@@ -1,5 +1,5 @@
-
 class Leaderboard {
+  
   constructor () {
     this.leaderboardDiv = document.getElementById('users-container');
     this.leaderboardWindow = document.getElementById('leaderboard-window');
@@ -11,6 +11,7 @@ class Leaderboard {
     this.getBestRun = this.getBestRun.bind(this);
     this.createBestRunElements = this.createBestRunElements.bind(this);
     this.fetchUsers = this.fetchUsers.bind(this);
+    this.deleteRuns = this.deleteRuns.bind(this);
     this.handleLeaderboardToggle = this.handleLeaderboardToggle.bind(this);
   }
 
@@ -18,6 +19,20 @@ class Leaderboard {
     fetch('http://localhost:3000/accounts')
       .then(res => res.json())
       .then(json => this.displayAccounts(json));
+  }
+
+  deleteRuns (runId) {
+    const config = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      }
+    };
+
+    return fetch(`http://localhost:3000/runs/${runId}`, config);
+      // .then();
+      // //TODO RE-Render HERE????
   }
 
   displayAccounts (accounts) {
@@ -48,9 +63,19 @@ class Leaderboard {
 
   getBestRun (runs) {
     let bestRun = runs[0];
-    for (const run of runs) {
-      if (run.score > bestRun.score) {
-        bestRun = run;
+
+    if (bestRun === undefined) {
+      bestRun = {
+        score: 0,
+        words_typed: [],
+        words_seen: [],
+        id: undefined
+      };
+    } else {
+      for (const run of runs) {
+        if (run.score > bestRun.score) {
+          bestRun = run;
+        }
       }
     }
     return bestRun;
@@ -60,16 +85,28 @@ class Leaderboard {
     const runScoreP = document.createElement('p');
     const runWordsTyped = document.createElement('p');
     const runWordsSeen = document.createElement('p');
+    const runDeleteDutton = document.createElement('button');
+    const runHr = document.createElement('hr');
 
     const bestRun = this.getBestRun(account.runs);
 
-    if (bestRun) {
-      runScoreP.textContent = bestRun.score;
-      runWordsTyped.textContent = bestRun.words_typed;
-      runWordsSeen.textContent = bestRun.words_seen;
-    }
+    runDeleteDutton.addEventListener('click', (event) => {
+      if (bestRun.id !== undefined){
+        this.deleteRuns(bestRun.id)
+        .then(console.log(event.target.parentElement));
+      } else {
+        console.log('Cannot delete null run.');
+      }
 
-    return [runScoreP, runWordsTyped, runWordsSeen];
+      //TODO: target event parent and re-Render
+    });
+
+    runScoreP.textContent = bestRun.score;
+    runWordsTyped.textContent = bestRun.words_typed;
+    runWordsSeen.textContent = bestRun.words_seen;
+    runDeleteDutton.textContent = 'Delete';
+
+    return [runScoreP, runWordsTyped, runWordsSeen, runDeleteDutton, runHr];
   }
 
   handleLeaderboardToggle () {
