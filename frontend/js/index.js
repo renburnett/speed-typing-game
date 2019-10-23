@@ -22,7 +22,6 @@ function accountLogin (email, username) {
         createAccount(email, username)
           .then(resp => resp.json())
           .then(account => {
-            console.log(game.account)
             game.account = account;
             displayGame();
             leaderboard.fetchUsers();
