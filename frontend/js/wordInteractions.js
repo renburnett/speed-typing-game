@@ -24,8 +24,7 @@ function startGame () {
         game.typos = 0;
 
         loadWordsFromApi();
-        loadEntryForm();
-        loadTimer();
+        loadGameWindowItems();
         populateWords();
       });
   });
@@ -79,14 +78,10 @@ function addWordToPage (word) {
   wordsToTypeUl.append(li);
 }
 
-function loadEntryForm () {
-  const typingFormDiv = document.getElementById('word-submission-div');
-  typingFormDiv.classList.remove('hidden');
-}
-
-function loadTimer () {
-  const gameTimerDiv = document.getElementById('game-timer-div');
-  gameTimerDiv.classList.remove('hidden');
+function loadGameWindowItems () {
+  document.getElementById('word-submission-div').classList.remove('hidden');
+  document.getElementById('typo-alert').classList.remove('hidden');
+  document.getElementById('game-timer-div').classList.remove('hidden');
   TIMER_ID = setInterval(incrementTimerOnScreen, 1000);
 }
 
@@ -98,12 +93,12 @@ function incrementTimerOnScreen () {
   const startTime = new Date(game.run.created_at);
   const currentTime = new Date();
 
-  const secs = Math.round((currentTime - startTime) / 1000) % 60;
-  secs < 10 ? seconds.textContent = 0 + secs : seconds.textContent = secs;
-  const mins = Math.round((currentTime - startTime) / 60000) % 60;
-  mins < 10 ? minutes.textContent = 0 + mins : minutes.textContent = mins;
-  const hrs = Math.round((currentTime - startTime) / 360000) % 24;
-  hrs < 10 ? hours.textContent = 0 + hrs : hours.textContent = hrs;
+  const secs = Math.floor((currentTime - startTime) / 1000) % 60;
+  secs < 10 ? seconds.textContent = '0' + secs : seconds.textContent = secs;
+  const mins = Math.floor((currentTime - startTime) / 60000) % 60;
+  mins < 10 ? minutes.textContent = '0' + mins : minutes.textContent = mins;
+  const hrs = Math.floor((currentTime - startTime) / 360000) % 24;
+  hrs < 10 ? hours.textContent = '0' + hrs : hours.textContent = hrs;
 }
 
 function populateWords () {
@@ -128,12 +123,37 @@ function playerTypesWord () {
       game.wordsTyped.push(typedSubmission);
     } else {
       game.typos++;
+      alertTypo(typedSubmission);
     }
     if (game.typos > 2) {
       gameOver();
     }
     typingForm['word-entered'].value = '';
   });
+}
+
+function alertTypo (typedSubmission) {
+  const allTyposDiv = document.getElementById('typo-alert');
+  const thisTypoDiv = document.createElement('div');
+  const h4 = document.createElement('h4');
+  const p = document.createElement('p');
+
+  h4.textContent = `TYPO: "${typedSubmission}" is not a valid entry!`;
+
+  let lives = 'lives';
+  if (game.typos === 2) { lives = 'life'; }
+  p.textContent = `You have ${3 - game.typos} ${lives} remaining.`;
+
+  thisTypoDiv.append(h4, p);
+  allTyposDiv.appendChild(thisTypoDiv);
+  setTimeout(removeTypoAlert, 2500);
+}
+
+function removeTypoAlert () {
+  const allTyposDiv = document.getElementById('typo-alert');
+  if (allTyposDiv.firstElementChild) {
+    allTyposDiv.removeChild(allTyposDiv.firstElementChild);
+  }
 }
 
 function gameOver () {
@@ -144,8 +164,9 @@ function gameOver () {
 
   document.getElementById('word-submission-div').classList.add('hidden');
   document.getElementById('words-to-type').innerHTML = '';
-  resetTimer();
   clearInterval(WORD_POPULATION_ID);
+  resetTimer();
+  resetTyposAlert();
 }
 
 function updateRun () {
@@ -162,6 +183,14 @@ function updateRun () {
       words_seen: game.wordsSeen.join(', ')
     })
   });
+}
+
+function resetTyposAlert () {
+  const allTyposDiv = document.getElementById('typo-alert');
+  allTyposDiv.classList.add('hidden');
+  while (allTyposDiv.firstElementChild) {
+    allTyposDiv.removeChild(allTyposDiv.firstElementChild);
+  }
 }
 
 function resetTimer () {
