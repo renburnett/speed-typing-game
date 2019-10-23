@@ -136,16 +136,17 @@ function playerTypesWord () {
 function alertTypo (typedSubmission) {
   const allTyposDiv = document.getElementById('typo-alert');
   const thisTypoDiv = document.createElement('div');
+  thisTypoDiv.classList.add('alert', 'alert-warning');
   const h4 = document.createElement('h4');
-  const p = document.createElement('p');
+  const span = document.createElement('span');
 
   h4.textContent = `TYPO: "${typedSubmission}" is not a valid entry!`;
 
   let lives = 'lives';
   if (game.typos === 2) { lives = 'life'; }
-  p.textContent = `You have ${3 - game.typos} ${lives} remaining.`;
+  span.textContent = `You have ${3 - game.typos} ${lives} remaining.`;
 
-  thisTypoDiv.append(h4, p);
+  thisTypoDiv.append(h4, span);
   allTyposDiv.appendChild(thisTypoDiv);
   setTimeout(removeTypoAlert, 2500);
 }
