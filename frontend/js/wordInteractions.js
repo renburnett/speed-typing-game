@@ -86,19 +86,20 @@ function loadGameWindowItems () {
 }
 
 function incrementTimerOnScreen () {
-  const seconds = document.getElementById('seconds');
-  const minutes = document.getElementById('minutes');
-  const hours = document.getElementById('hours');
-
   const startTime = new Date(game.run.created_at);
   const currentTime = new Date();
+  const timeDiff = currentTime - startTime;
 
-  const secs = Math.floor((currentTime - startTime) / 1000) % 60;
-  secs < 10 ? seconds.textContent = '0' + secs : seconds.textContent = secs;
-  const mins = Math.floor((currentTime - startTime) / 60000) % 60;
-  mins < 10 ? minutes.textContent = '0' + mins : minutes.textContent = mins;
-  const hrs = Math.floor((currentTime - startTime) / 360000) % 24;
-  hrs < 10 ? hours.textContent = '0' + hrs : hours.textContent = hrs;
+  updateTimeOnScreen(calculateTime(timeDiff, 1000), document.getElementById('seconds'));
+  updateTimeOnScreen(calculateTime(timeDiff, 60000), document.getElementById('minutes'));
+}
+
+function calculateTime (timeSinceStart, millisecondsDivisor) {
+  return Math.floor((timeSinceStart) / millisecondsDivisor) % 60;
+}
+
+function updateTimeOnScreen (time, timeContainer) {
+  time < 10 ? timeContainer.textContent = '0' + time : timeContainer.textContent = time;
 }
 
 function populateWords () {
@@ -198,7 +199,6 @@ function resetTimer () {
   clearInterval(TIMER_ID);
   document.getElementById('seconds').textContent = '00';
   document.getElementById('minutes').textContent = '00';
-  document.getElementById('hours').textContent = '00';
 }
 
 function removeWordFromPage (submission) {

@@ -66,7 +66,7 @@
           <!--Card content-->
           <div class="card-body">
 
-            <!-- Form -->
+            <!-- Login Form -->
             <form id="login-form" action="" method="POST">
               <!-- Heading -->
               <h3 class="dark-grey-text text-center">
@@ -90,22 +90,32 @@
               </div>
 
             </form>
-            <!-- Form -->
-            <h2 id='game-over-header' class="hidden">Game Over!</h2>
+            <!-- End Login Form -->
 
+            <!-- Game Over Alert -->
+            <div class="row justify-content-center">
+              <h2 id='game-over-header' class="hidden">Game Over!</h2>
+            </div>
+            <!-- End Game Over Alert -->
+
+            <!-- Timer -->
             <div class="row justify-content-center">
               <div id="game-timer-div" class="hidden">
                 <p>
-                  <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
+                  <span id="minutes">00</span>:<span id="seconds">00</span>
                 </p>
               </div>
             </div>
+            <!-- End Timer -->
 
+            <!-- Typo Alert -->
             <div class="row justify-content-center">
               <div id="typo-alert" class="hidden">
               </div>
             </div>
+            <!-- End Typo Alert -->
 
+            <!-- Start Game Button -->
             <div class="row justify-content-center">
               <div id="game-window" class="hidden">
                 <button id="start-button" class="btn btn-indigo">Start Game</button>
@@ -118,26 +128,28 @@
                 <ul id="words-to-type"></ul>
               </div>
             </div>
+            <!-- End Start Game Button -->
 
-              <div id="leaderboard-window" class="hidden">
-                <h1>Leaderboard:</h1>
-                <hr>
-                <table class="table table-striped">
-                    <thead class="blue white-text">
-                      <tr>
-                        <th scope="col">User</th>
-                        <th scope="col">Score</th>
-                        <th scope="col">Words Typed</th>
-                        <th scope="col">Words Seen</th>
-                        <th scope="col">Delete</th>
-                      </tr>
-                    </thead>
-                    <tbody id="leaderboard-tbody">
-                      <!-- best runs placed here -->
-                    </tbody>
-                  </table>
-              </div>
+            <!-- Leaderboard -->
+            <div id="leaderboard-window" class="hidden">
+              <h1>Leaderboard:</h1>
+              <hr>
+              <table class="table table-striped">
+                <thead class="blue white-text">
+                  <tr>
+                    <th scope="col">User</th>
+                    <th scope="col">Score</th>
+                    <th scope="col">Words Typed</th>
+                    <th scope="col">Words Seen</th>
+                    <th scope="col">Delete</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboard-tbody">
+                  <!-- best runs placed here -->
+                </tbody>
+              </table>
             </div>
+            <!-- End Leaderboard -->
 
           </div>
           <!--/.Card-->
