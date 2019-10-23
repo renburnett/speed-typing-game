@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
   playerTypesWord();
 });
 
-let ALL_WORDS = [];
+
+let ALL_WORDS = {};
 let TIMER_ID;
 let WORD_POPULATION_ID;
 
@@ -11,7 +12,6 @@ function startGame () {
   const startBtn = document.getElementById('start-button');
   startBtn.addEventListener('click', () => {
     startBtn.classList.add('hidden');
-    document.getElementById('leaderboard-toggle-button').classList.add('hidden');
     document.getElementById('leaderboard-window').classList.add('hidden');
     document.getElementById('game-over-header').classList.add('hidden');
 
@@ -51,7 +51,11 @@ function createNewRun () {
 function loadWordsFromApi () {
   fetch('http://localhost:3000/word_banks')
     .then(resp => resp.json())
-    .then(json => ALL_WORDS = json)
+    .then(wordsList => {
+      for (const word of wordsList) {
+        ALL_WORDS[word.id] = word.word;
+      }
+    })
     .then(() => {
       for (let i = 0; i < 3; i++) {
         chooseRandomWord();
@@ -60,15 +64,12 @@ function loadWordsFromApi () {
 }
 
 function chooseRandomWord () {
-  let location = Math.floor(Math.random() * ALL_WORDS.length);
-  let randomWord = ALL_WORDS[location].word;
-  while (game.wordsSeen.includes(randomWord)) {
-    location = Math.floor(Math.random() * ALL_WORDS.length);
-    randomWord = ALL_WORDS[location].word;
-  }
+  const keys = Object.keys(ALL_WORDS);
+  const location = Math.floor(Math.random() * keys.length);
+  const randomWord = ALL_WORDS[keys[location]];
   addWordToPage(randomWord);
   game.wordsSeen.push(randomWord);
-  }
+  delete ALL_WORDS[keys[location]];
 }
 
 function addWordToPage (word) {
@@ -141,7 +142,6 @@ function gameOver () {
 
   document.getElementById('game-over-header').classList.remove('hidden');
   document.getElementById('start-button').classList.remove('hidden');
-  document.getElementById('leaderboard-toggle-button').classList.remove('hidden');
 
   document.getElementById('word-submission-div').classList.add('hidden');
   document.getElementById('words-to-type').innerHTML = '';

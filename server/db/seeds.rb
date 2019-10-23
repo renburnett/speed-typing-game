@@ -19,8 +19,21 @@ account2.runs.create(score: -1, words_typed: "great, job, dad",  words_seen: "mu
 account3 = Account.create(username: "Krista", email: "k@k.com")
 account3.runs.create(score: 3, words_typed: "great, job, dad",  words_seen: "paint, sky, blue, great, job, dad")
 
-words = ["arc", "rig",  "dip", "ray", "tag", "win", "wet", "hot", "mow", "arm", "bio", "low", "dry", "fix", "ask", "pea", "ash", "sun", "pig", "own", "pod", "may", "sit", "old", "fan", "sit", "rue", "fox", "ace", "leg", "ram", "sap", "lee", "woe", "sky"]
-
-words.each do |word|
-  WordBank.create(word: word, length: word.length)
+def add_words_to_database(words_arr)
+  words_arr.each do |item|
+    WordBank.create(word: item['word'], length: item['word'].length)
+  end
 end
+
+three_letter_words = JSON.parse(RestClient.get('https://api.datamuse.com/words/?sp=???&max=999'))
+four_letter_words = JSON.parse(RestClient.get('https://api.datamuse.com/words/?sp=????&max=999'))
+five_letter_words = JSON.parse(RestClient.get('https://api.datamuse.com/words/?sp=?????&max=999'))
+six_letter_words = JSON.parse(RestClient.get('https://api.datamuse.com/words/?sp=??????&max=999'))
+seven_letter_words = JSON.parse(RestClient.get('https://api.datamuse.com/words/?sp=???????&max=999'))
+
+add_words_to_database(three_letter_words)
+add_words_to_database(four_letter_words)
+add_words_to_database(five_letter_words)
+add_words_to_database(six_letter_words)
+add_words_to_database(seven_letter_words)
+
