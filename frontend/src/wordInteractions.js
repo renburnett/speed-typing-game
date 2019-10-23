@@ -92,9 +92,18 @@ function loadTimer () {
 
 function incrementTimerOnScreen () {
   const seconds = document.getElementById('seconds');
+  const minutes = document.getElementById('minutes');
+  const hours = document.getElementById('hours');
+
   const startTime = new Date(game.run.created_at);
   const currentTime = new Date();
-  seconds.textContent = Math.round((currentTime - startTime) / 1000);
+
+  const secs = Math.round((currentTime - startTime) / 1000) % 60;
+  secs < 10 ? seconds.textContent = 0 + secs : seconds.textContent = secs;
+  const mins = Math.round((currentTime - startTime) / 60000) % 60;
+  mins < 10 ? minutes.textContent = 0 + mins : minutes.textContent = mins;
+  const hrs = Math.round((currentTime - startTime) / 360000) % 24;
+  hrs < 10 ? hours.textContent = 0 + hrs : hours.textContent = hrs;
 }
 
 function populateWords () {
@@ -159,7 +168,9 @@ function updateRun () {
 function resetTimer () {
   document.getElementById('game-timer-div').classList.add('hidden');
   clearInterval(TIMER_ID);
-  document.getElementById('seconds').textContent = '0';
+  document.getElementById('seconds').textContent = '00';
+  document.getElementById('minutes').textContent = '00';
+  document.getElementById('hours').textContent = '00';
 }
 
 function removeWordFromPage (submission) {
