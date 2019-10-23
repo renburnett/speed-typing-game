@@ -26,8 +26,7 @@ function startGame () {
         game.difficulty = 14;
 
         loadWordsFromApi();
-        loadEntryForm();
-        loadTimer();
+        loadGameWindowItems();
       });
   });
 }
@@ -61,7 +60,7 @@ function loadWordsFromApi () {
         chooseRandomWord();
       }
     })
-    .then(populateWords());
+    .then(populateWords);
 }
 
 function chooseRandomWord () {
@@ -81,28 +80,24 @@ function addWordToPage (word) {
   wordsToTypeUl.append(li);
 }
 
-function loadEntryForm () {
-  const typingFormDiv = document.getElementById('word-submission-div');
-  typingFormDiv.classList.remove('hidden');
-}
-
-function loadTimer () {
-  const gameTimerDiv = document.getElementById('game-timer-div');
-  gameTimerDiv.classList.remove('hidden');
+function loadGameWindowItems () {
+  document.getElementById('word-submission-div').classList.remove('hidden');
+  document.getElementById('typo-alert').classList.remove('hidden');
+  document.getElementById('game-timer-div').classList.remove('hidden');
   TIMER_ID = setInterval(incrementTimerOnScreen, 1000);
 }
 
 function incrementTimerOnScreen () {
   const startTime = new Date(game.run.created_at);
   const currentTime = new Date();
+  const timeDiff = currentTime - startTime;
 
-  const secs = Math.floor((currentTime - startTime) / 1000) % 60;
-  const mins = Math.floor((currentTime - startTime) / 60000) % 60;
-  const hrs = Math.floor((currentTime - startTime) / 360000) % 24;
+  updateTimeOnScreen(calculateTime(timeDiff, 1000), document.getElementById('seconds'));
+  updateTimeOnScreen(calculateTime(timeDiff, 60000), document.getElementById('minutes'));
+}
 
-  updateTimeOnScreen(secs, document.getElementById('seconds'));
-  updateTimeOnScreen(mins, document.getElementById('minutes'));
-  updateTimeOnScreen(hrs, document.getElementById('hours'));
+function calculateTime (timeSinceStart, millisecondsDivisor) {
+  return Math.floor((timeSinceStart) / millisecondsDivisor) % 60;
 }
 
 function updateTimeOnScreen (time, timeContainer) {
@@ -138,13 +133,38 @@ function playerTypesWord () {
       game.wordsTyped.push(typedSubmission);
     } else {
       game.typos++;
+      alertTypo(typedSubmission);
     }
     if (game.typos > 2) {
-      console.log('death by typos');
       gameOver();
     }
     typingForm['word-entered'].value = '';
   });
+}
+
+function alertTypo (typedSubmission) {
+  const allTyposDiv = document.getElementById('typo-alert');
+  const thisTypoDiv = document.createElement('div');
+  thisTypoDiv.classList.add('alert', 'alert-warning');
+  const h4 = document.createElement('h4');
+  const span = document.createElement('span');
+
+  h4.textContent = `TYPO: "${typedSubmission}" is not a valid entry!`;
+
+  let lives = 'lives';
+  if (game.typos === 2) { lives = 'life'; }
+  span.textContent = `You have ${3 - game.typos} ${lives} remaining.`;
+
+  thisTypoDiv.append(h4, span);
+  allTyposDiv.appendChild(thisTypoDiv);
+  setTimeout(removeTypoAlert, 2500);
+}
+
+function removeTypoAlert () {
+  const allTyposDiv = document.getElementById('typo-alert');
+  if (allTyposDiv.firstElementChild) {
+    allTyposDiv.removeChild(allTyposDiv.firstElementChild);
+  }
 }
 
 function gameOver () {
@@ -155,8 +175,9 @@ function gameOver () {
 
   document.getElementById('word-submission-div').classList.add('hidden');
   document.getElementById('words-to-type').innerHTML = '';
-  resetTimer();
   clearInterval(WORD_POPULATION_ID);
+  resetTimer();
+  resetTyposAlert();
 }
 
 function updateRun () {
@@ -175,12 +196,19 @@ function updateRun () {
   });
 }
 
+function resetTyposAlert () {
+  const allTyposDiv = document.getElementById('typo-alert');
+  allTyposDiv.classList.add('hidden');
+  while (allTyposDiv.firstElementChild) {
+    allTyposDiv.removeChild(allTyposDiv.firstElementChild);
+  }
+}
+
 function resetTimer () {
   document.getElementById('game-timer-div').classList.add('hidden');
   clearInterval(TIMER_ID);
   document.getElementById('seconds').textContent = '00';
   document.getElementById('minutes').textContent = '00';
-  document.getElementById('hours').textContent = '00';
 }
 
 function removeWordFromPage (submission) {
