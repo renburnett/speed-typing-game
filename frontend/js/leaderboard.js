@@ -1,7 +1,5 @@
 class Leaderboard {
-  
   constructor () {
-    this.leaderboardDiv = document.getElementById('users-container');
     this.leaderboardTableBody = document.getElementById('leaderboard-tbody');
     this.leaderboardWindow = document.getElementById('leaderboard-window');
 
@@ -102,14 +100,13 @@ class Leaderboard {
 
     const bestRun = this.getUserBestRun(account.runs);
 
-    runDeleteButton.addEventListener('click', (event) => {
+    runDeleteButton.addEventListener('click', () => {
       if (bestRun.id !== undefined){
         this.deleteRun(bestRun.id);
-        // .then(console.log(event.target.parentElement));
       } else {
         console.log('Cannot delete null run.');
+        //TODO: maybe change to modal popup?
       }
-      //TODO: target event parent and re-Render
     });
 
     userName.textContent = account.username;
@@ -117,10 +114,11 @@ class Leaderboard {
     runWordsTyped.textContent = bestRun.words_typed;
     runWordsSeen.textContent = bestRun.words_seen;
     runDeleteButton.textContent = 'Delete';
-    runDeleteButton.classList.add("btn", "btn-link");
+    runDeleteButton.classList.add("btn", "btn-primary", "link");
 
     runContainer.append(userName, runScore, runWordsTyped, runWordsSeen, runDeleteButton);
 
+    //BUG: Current user can delete ANY user run 
     //TODO: Add figure out global account_id for curent user
     // if (game.account === account.account_id) {
     //   runContainer.append(runDeleteButton);
@@ -140,7 +138,6 @@ class Leaderboard {
 
 document.addEventListener('DOMContentLoaded', () => {
   const leaderboard = new Leaderboard();
-
   leaderboard.fetchUsers();
   leaderboard.handleLeaderboardToggle();
 });
