@@ -48,9 +48,9 @@ function createNewRun () {
 function loadWordsFromApi () {
   fetch('http://localhost:3000/word_banks')
     .then(resp => resp.json())
-    .then(words => {
-      for (const index in words) {
-        ALL_WORDS[words[index].id] = words[index].word;
+    .then(wordsList => {
+      for (const word of wordsList) {
+        ALL_WORDS[word.id] = word.word;
       }
     })
     .then(() => {
