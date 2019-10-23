@@ -6,5 +6,7 @@ class Game {
     this.wordsSeen = wordsSeen;
     this.score = score;
     this.typos = typos;
+    this.turns = 0;
+    this.difficulty = 14;
   }
 }
