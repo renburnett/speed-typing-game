@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   playerTypesWord();
 });
 
-let ALL_WORDS = [];
+const ALL_WORDS = {};
 
 function startGame () {
   const startBtn = document.getElementById('start-button');
@@ -48,7 +48,11 @@ function createNewRun () {
 function loadWordsFromApi () {
   fetch('http://localhost:3000/word_banks')
     .then(resp => resp.json())
-    .then(json => ALL_WORDS = json)
+    .then(wordsList => {
+      for (const word of wordsList) {
+        ALL_WORDS[word.id] = word.word;
+      }
+    })
     .then(() => {
       for (let i = 0; i < 3; i++) {
         chooseRandomWord();
@@ -57,14 +61,12 @@ function loadWordsFromApi () {
 }
 
 function chooseRandomWord () {
-  let location = Math.floor(Math.random() * ALL_WORDS.length);
-  let randomWord = ALL_WORDS[location].word;
-  while (game.wordsSeen.includes(randomWord)) {
-    location = Math.floor(Math.random() * ALL_WORDS.length);
-    randomWord = ALL_WORDS[location].word;
-  }
+  const keys = Object.keys(ALL_WORDS);
+  const location = Math.floor(Math.random() * keys.length);
+  const randomWord = ALL_WORDS[keys[location]];
   addWordToPage(randomWord);
   game.wordsSeen.push(randomWord);
+  delete ALL_WORDS[keys[location]];
 }
 
 function addWordToPage (word) {
