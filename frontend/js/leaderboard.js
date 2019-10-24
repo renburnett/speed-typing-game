@@ -16,7 +16,7 @@ class Leaderboard {
     this.fetchUsers = this.fetchUsers.bind(this);
     this.deleteRun = this.deleteRun.bind(this);
     this.handleLeaderboardToggle = this.handleLeaderboardToggle.bind(this);
-    this.addDeleteColumnAndBtn = this.addDeleteColumnAndBtnbind(this);
+    this.addDeleteColumnAndBtn = this.addDeleteColumnAndBtn.bind(this);
   }
 
   fetchUsers () {
