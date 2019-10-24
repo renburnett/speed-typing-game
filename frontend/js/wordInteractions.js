@@ -131,7 +131,6 @@ function playerTypesWord () {
     if (removeWordFromPage(typedSubmission)) {
       game.wordsTyped.push(typedSubmission);
       game.score += typedSubmission.length;
-      console.log(game.score);
     } else {
       game.typos++;
       game.score -= typedSubmission.length;
