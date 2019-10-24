@@ -16,6 +16,14 @@ body {
   background: darkcyan;
 }
 
+.no-bullets {
+  list-style-type: none;
+}
+
+.card-body {
+  max-height: 640px;
+}
+
 html,
 body,
 header,

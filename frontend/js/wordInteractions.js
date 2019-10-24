@@ -77,7 +77,11 @@ function addWordToPage (word) {
   const li = document.createElement('li');
   li.innerText = word;
   li.classList.add('untyped');
+  li.classList.add('no-bullets');
   wordsToTypeUl.append(li);
+
+  const randVal = Math.floor(Math.random() * MOVEMENT.length);
+  MOVEMENT[randVal](li);
 }
 
 function loadGameWindowItems () {
@@ -110,9 +114,8 @@ function populateWords () {
 
 function populateWordsIfActive () {
   game.turns++;
-  console.log(game.turns, game.difficulty);
   // Every 5 seconds, increase word spawn rate by .1 seconds
-  if (game.turns % 30 === 0 && game.difficulty > 2) {
+  if (game.turns % 60 === 0 && game.difficulty > 2) {
     game.difficulty -= 2;
   }
   if (game.turns % game.difficulty === 0) {
