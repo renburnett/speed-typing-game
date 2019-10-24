@@ -100,39 +100,45 @@
               <h2 id='game-over-header' class="hidden">Game Over!</h2>
             </div>
             <!-- End Game Over Alert -->
-
-            <!-- Timer -->
-            <div class="row justify-content-center">
-              <div id="game-timer-div" class="hidden">
-                <p>
-                  <span id="minutes">00</span>:<span id="seconds">00</span>
-                </p>
-              </div>
-            </div>
-            <!-- End Timer -->
-
             <!-- Typo Alert -->
             <div class="row justify-content-center">
               <div id="typo-alert" class="hidden">
               </div>
             </div>
             <!-- End Typo Alert -->
-
-            <!-- Start Game Button -->
             <div class="row justify-content-center">
-              <div id="game-window" class="hidden">
-                <button id="start-button" class="btn btn-indigo">Start Game</button>
-                <div id="word-submission-div" class="hidden">
-                  <form id="word-submission-form" autocomplete="off">
-                    <input type="text" id="player-input" name="word-entered" placeholder="Enter a word" autocomplete="off">
-                    <input type="submit" value="submit" class="hidden">
-                  </form>
-                </div>
-                <br>
-                <ul id="words-to-type"></ul>
-              </div>
+              <button id="start-button" class="btn btn-indigo hidden">Start Game</button>
             </div>
-            <!-- End Start Game Button -->
+            <div id="game-window" class="row justify-content-center hidden">
+              <!-- Timer -->
+              <div class="col-4 justify-content-center border-bottom ">
+                <div id="game-timer-div" class="hidden">
+                  <label for="minutes">Timer: </label>
+                    <span id="minutes">00</span>:<span id="seconds">00</span>
+                </div>
+              </div>
+              <!-- End Timer -->
+              <!-- Word Submission -->
+              <div id="word-submission-div" class="col-4 justify-content-center hidden border-bottom">
+                <form id="word-submission-form" autocomplete="off">
+                  <input type="text" id="player-input" name="word-entered" placeholder="Enter a word" autocomplete="off">
+                  <input type="submit" value="submit" class="hidden">
+                </form>
+              </div>
+              <!-- End Word Submission -->
+              <!-- Score -->
+              <div class="col-4 border-bottom">
+                <div id="game-score-div" class="text-right hidden">
+                    <label for="score">Score: </label>
+                    <span id="score">0</span>
+                </div>
+              </div>
+              <!-- End Score -->
+              <br>
+              <ul id="words-to-type" ></ul>
+            </div>
+            
+            </div>
           </div>
         </div>
         <!-- Main Card End -->
