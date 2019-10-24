@@ -138,21 +138,21 @@
         <!-- Main Card End -->
 
         <!-- Leaderboard Card -->
-        <div id="leaderboard-window" class="card mt-5 hidden">
+        <div id="leaderboard-window" class="card mt-4 hidden">
           <!--Card content-->
-          <div class="card-body">
+          <div class="card-body manage-overflow">
             <!-- Leaderboard -->
             <div>
               <h1>Leaderboard:</h1>
               <hr>
-              <table class="table table-striped">
+              <table class="table table-striped" id="leaderboard-table">
                 <thead class="blue white-text">
                   <tr>
                     <th scope="col">User</th>
                     <th scope="col">Score</th>
                     <th scope="col">Words Typed</th>
                     <th scope="col">Words Seen</th>
-                    <th scope="col">Delete</th>
+                    <th scope="col" id="delete-run-btn-col" class="hidden">Delete</th>
                   </tr>
                 </thead>
                 <tbody id="leaderboard-tbody">

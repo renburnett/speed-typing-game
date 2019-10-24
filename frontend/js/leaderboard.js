@@ -16,6 +16,7 @@ class Leaderboard {
     this.fetchUsers = this.fetchUsers.bind(this);
     this.deleteRun = this.deleteRun.bind(this);
     this.handleLeaderboardToggle = this.handleLeaderboardToggle.bind(this);
+    this.addDeleteColumnAndBtn = this.addDeleteColumnAndBtnbind(this);
   }
 
   fetchUsers () {
@@ -34,10 +35,10 @@ class Leaderboard {
     };
 
     fetch(`http://localhost:3000/runs/${runId}`, config)
-    .then(() => {
-      this.clearUserAccountsFromTable();
-      this.fetchUsers();
-    });
+      .then(() => {
+        this.clearUserAccountsFromTable();
+        this.fetchUsers();
+      });
   }
 
   clearUserAccountsFromTable () {
@@ -49,7 +50,7 @@ class Leaderboard {
   displayAccountsAndBestRuns (accounts) {
     const runElements = [];
     this.clearUserAccountsFromTable();
-    
+
     for (const account of accounts) {
       runElements.push(this.createAccountAndBestRunElements(account));
     }
@@ -66,23 +67,24 @@ class Leaderboard {
 
   orderUsersBestRuns (arr) {
     arr.sort((a, b) => {
-      if (a.score > b.score) 
+      if (a.score > b.score) {
         return -1;
-      else if (a.score < b.score)
+      } else if (a.score < b.score) {
         return 1;
-      else
+      } else {
         return 0;
+      }
     });
   }
 
   getUserBestRun (runs) {
     let bestRun = runs[0];
 
-    if (bestRun === undefined) {
+    if (!bestRun) {
       bestRun = {
         score: 0,
-        words_typed: [],
-        words_seen: [],
+        words_typed: '',
+        words_seen: '',
         id: undefined,
         account_id: undefined
       };
@@ -102,33 +104,39 @@ class Leaderboard {
     const runScore = document.createElement('td');
     const runWordsTyped = document.createElement('td');
     const runWordsSeen = document.createElement('td');
-    const runDeleteButton = document.createElement('button');
 
     const bestRun = this.getUserBestRun(account.runs);
-
-    runDeleteButton.addEventListener('click', () => {
-      if (bestRun.id !== undefined){
-        this.deleteRun(bestRun.id);
-      } else {
-        console.log('Cannot delete null run.');
-        //TODO: maybe change to modal popup?
-      }
-    });
 
     userName.textContent = account.username;
     runScore.textContent = bestRun.score;
     runWordsTyped.textContent = bestRun.words_typed;
     runWordsSeen.textContent = bestRun.words_seen;
-    runDeleteButton.textContent = 'Delete';
-    runDeleteButton.classList.add("btn", "btn-primary", "link");
 
     runContainer.append(userName, runScore, runWordsTyped, runWordsSeen);
 
-    if (game.account && Number(game.account.id) === Number(account.id)) {
-      runContainer.append(runDeleteButton);
-    }
+    this.addDeleteColumnAndBtn(account, bestRun, runContainer);
 
-    return {runElements: runContainer, accountId: account.id, score: bestRun.score};
+    return { runElements: runContainer, accountId: account.id, score: bestRun.score };
+  }
+
+  addDeleteColumnAndBtn (account, bestRun, tableRow) {
+    if (game.account && bestRun.id && Number(game.account.id) === Number(account.id)) {
+      document.getElementById('delete-run-btn-col').classList.remove('hidden');
+
+      const runDeleteButton = document.createElement('button');
+      runDeleteButton.textContent = 'Delete';
+      runDeleteButton.classList.add('btn', 'btn-outline-danger', 'btn-sm', 'link');
+      runDeleteButton.addEventListener('click', () => {
+        this.deleteRun(bestRun.id);
+      });
+      tableRow.append(runDeleteButton);
+    } else if (game.account) {
+      document.getElementById('delete-run-btn-col').classList.remove('hidden');
+
+      const emptyCol = document.createElement('td');
+      emptyCol.textContent = '';
+      tableRow.append(emptyCol);
+    }
   }
 
   handleLeaderboardToggle () {
@@ -141,4 +149,3 @@ class Leaderboard {
 }
 
 const leaderboard = new Leaderboard();
-
