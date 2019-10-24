@@ -24,6 +24,10 @@ body {
   max-height: 640px;
 }
 
+.border-thick {
+  border-bottom: 2px solid #1C2331!important
+}
+
 html,
 body,
 header,
