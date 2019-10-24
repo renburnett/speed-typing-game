@@ -9,6 +9,7 @@ let WORD_POPULATION_ID;
 
 function startGame () {
   const startBtn = document.getElementById('start-button');
+
   startBtn.addEventListener('click', () => {
     startBtn.classList.add('hidden');
     document.getElementById('leaderboard-window').classList.add('hidden');
@@ -140,6 +141,7 @@ function playerTypesWord () {
     } else {
       game.typos++;
       game.score -= typedSubmission.length;
+      document.getElementById('score').textContent = game.score;
       alertTypo(typedSubmission);
     }
     if (game.typos > 2) {
