@@ -134,8 +134,10 @@ function playerTypesWord () {
 
     if (removeWordFromPage(typedSubmission)) {
       game.wordsTyped.push(typedSubmission);
+      game.score += typedSubmission.length;
     } else {
       game.typos++;
+      game.score -= typedSubmission.length;
       alertTypo(typedSubmission);
     }
     if (game.typos > 2) {
@@ -196,7 +198,8 @@ function updateRun () {
       words_typed: game.wordsTyped.join(', '),
       words_seen: game.wordsSeen.join(', ')
     })
-  });
+  })
+    .then(leaderboard.fetchUsers);
 }
 
 function resetTyposAlert () {
