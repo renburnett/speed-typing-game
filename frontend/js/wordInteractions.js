@@ -9,6 +9,7 @@ let WORD_POPULATION_ID;
 
 function startGame () {
   const startBtn = document.getElementById('start-button');
+
   startBtn.addEventListener('click', () => {
     startBtn.classList.add('hidden');
     document.getElementById('leaderboard-window').classList.add('hidden');
@@ -88,6 +89,7 @@ function loadGameWindowItems () {
   document.getElementById('word-submission-div').classList.remove('hidden');
   document.getElementById('typo-alert').classList.remove('hidden');
   document.getElementById('game-timer-div').classList.remove('hidden');
+  document.getElementById('game-score-div').classList.remove('hidden');
   TIMER_ID = setInterval(incrementTimerOnScreen, 1000);
 }
 
@@ -135,9 +137,11 @@ function playerTypesWord () {
     if (removeWordFromPage(typedSubmission)) {
       game.wordsTyped.push(typedSubmission);
       game.score += typedSubmission.length;
+      document.getElementById('score').textContent = game.score;
     } else {
       game.typos++;
       game.score -= typedSubmission.length;
+      document.getElementById('score').textContent = game.score;
       alertTypo(typedSubmission);
     }
     if (game.typos > 2) {
@@ -182,6 +186,7 @@ function gameOver () {
   document.getElementById('words-to-type').innerHTML = '';
   clearInterval(WORD_POPULATION_ID);
   resetTimer();
+  resetScore();
   resetTyposAlert();
 }
 
@@ -215,6 +220,11 @@ function resetTimer () {
   clearInterval(TIMER_ID);
   document.getElementById('seconds').textContent = '00';
   document.getElementById('minutes').textContent = '00';
+}
+
+function resetScore () {
+  document.getElementById('game-score-div').classList.add('hidden');
+  document.getElementById('score').textContent = '0';
 }
 
 function removeWordFromPage (submission) {
