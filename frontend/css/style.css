@@ -24,6 +24,10 @@ body {
   max-height: 640px;
 }
 
+.manage-overflow {
+  overflow: auto;
+}
+
 html,
 body,
 header,
